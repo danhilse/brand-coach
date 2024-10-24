@@ -1,42 +1,38 @@
-interface TargetAudienceData {
-  userBuyerFocus: {
-    analysis: string;
-    score: number;
-  };
-  customerTypeFocus: {
-    analysis: string;
-    score: number;
-  };
+// components/TargetAudienceMatrix.tsx
+import type { TargetAudienceEvaluation } from '@/lib/types';
+
+interface QuadrantTextProps {
+  title: string;
+  description: string;
+  className: string;
 }
 
 const QuadrantText = ({ 
   title, 
   description, 
   className 
-}: { 
-  title: string;
-  description: string;
-  className: string;
-}) => (
+}: QuadrantTextProps) => (
   <div className={`absolute w-[45%] h-[45%] flex flex-col justify-center text-sm ${className}`}>
     <div className="font-bold mb-2 text-center">{title}</div>
     <div className="text-gray-600 text-xs text-center">{description}</div>
   </div>
 );
 
+interface AxisLabelProps {
+  text: string;
+  className: string;
+}
+
 const AxisLabel = ({ 
   text, 
   className 
-}: { 
-  text: string;
-  className: string;
-}) => (
+}: AxisLabelProps) => (
   <div className={`absolute text-gray-600 text-sm ${className}`}>
     {text}
   </div>
 );
 
-export const TargetAudienceAnalysis = ({ data }: { data: TargetAudienceData }) => {
+export const TargetAudienceMatrix = ({ evaluation }: { evaluation: TargetAudienceEvaluation }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <h3 className="text-xl font-bold mb-4">Target Audience Analysis</h3>
@@ -119,12 +115,12 @@ export const TargetAudienceAnalysis = ({ data }: { data: TargetAudienceData }) =
         <div 
           className="absolute w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"
           style={{ 
-            left: `${data.userBuyerFocus.score}%`, 
-            top: `${data.customerTypeFocus.score}%` 
+            left: `${evaluation.userBuyerFocus.score}%`, 
+            top: `${evaluation.customerTypeFocus.score}%` 
           }}
         >
           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs whitespace-nowrap">
-            ({data.userBuyerFocus.score}, {data.customerTypeFocus.score})
+            ({evaluation.userBuyerFocus.score}, {evaluation.customerTypeFocus.score})
           </div>
         </div>
       </div>
@@ -132,11 +128,11 @@ export const TargetAudienceAnalysis = ({ data }: { data: TargetAudienceData }) =
       <div className="space-y-4">
         <div>
           <h4 className="font-semibold mb-2">User vs. Buyer Focus</h4>
-          <p className="text-gray-700">{data.userBuyerFocus.analysis}</p>
+          <p className="text-gray-700">{evaluation.userBuyerFocus.analysis}</p>
         </div>
         <div>
           <h4 className="font-semibold mb-2">Customer Type Focus</h4>
-          <p className="text-gray-700">{data.customerTypeFocus.analysis}</p>
+          <p className="text-gray-700">{evaluation.customerTypeFocus.analysis}</p>
         </div>
       </div>
     </div>

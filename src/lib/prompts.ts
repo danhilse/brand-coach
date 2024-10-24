@@ -8,47 +8,160 @@ export function formatVoicePersonalityEvaluation(text: string): string {
 ${brandGuidelines}
 </brand_guidelines>
 
-Analyze this text:
+Analyze this text for voice and personality alignment:
 <input_text>
 ${text}
 </input_text>
+
+Consider these specific aspects in your evaluation:
+
+1. Supportive Challenger personality:
+- How well does the text balance being supportive while challenging readers to achieve more?
+- Does it demonstrate empathy while encouraging growth?
+- Is it proactive in offering solutions?
+
+2. White-Collar Mechanic personality:
+- Does it show technical expertise while remaining approachable?
+- How well does it balance professionalism with hands-on knowledge?
+- Is it detail-oriented while maintaining accessibility?
+
+3. Brand Voice characteristics:
+- Natural & Conversational: Is it straightforward without being overly casual?
+- Authentic & Approachable: Does it convey confidence without arrogance?
+- Gender-Neutral & Inclusive: Does it avoid any exclusionary language?
+- Channel-Appropriate: Is the tone suitable for the content type?
 
 Provide your evaluation in this format:
 
 <personality_evaluation>
 <supportive_challenger>
-<analysis>Evaluate how well the text embodies the Supportive Challenger personality</analysis>
+<analysis>Provide specific examples and analysis of Supportive Challenger alignment</analysis>
 <score>75</score>
 </supportive_challenger>
 <white_collar_mechanic>
-<analysis>Evaluate how well the text embodies the White-Collar Mechanic personality</analysis>
+<analysis>Provide specific examples and analysis of White-Collar Mechanic alignment</analysis>
 <score>75</score>
 </white_collar_mechanic>
 </personality_evaluation>
 
 <voice_evaluation>
 <natural_conversational>
-<analysis>Evaluate the text's natural and conversational quality</analysis>
+<analysis>Analyze natural and conversational qualities with examples</analysis>
 <score>75</score>
 </natural_conversational>
 <authentic_approachable>
-<analysis>Evaluate the text's authenticity and approachability</analysis>
+<analysis>Evaluate authenticity and approachability with examples</analysis>
 <score>75</score>
 </authentic_approachable>
 <gender_neutral>
-<analysis>Evaluate the text's gender neutrality and inclusivity</analysis>
+<analysis>Assess inclusivity and gender-neutral language with examples</analysis>
 <score>75</score>
 </gender_neutral>
 <channel_tailored>
-<analysis>Evaluate how well the text is tailored to its channel</analysis>
+<analysis>Evaluate channel appropriateness with context</analysis>
 <score>75</score>
 </channel_tailored>
 </voice_evaluation>
 
 <tone_evaluation>
-<analysis>Analyze where this text falls on the supportive-challenging spectrum</analysis>
+<analysis>Analyze the balance between supportive and challenging elements, citing specific examples</analysis>
 <score>75</score>
 </tone_evaluation>`;
+}
+
+export function formatTargetAudienceEvaluation(text: string): string {
+  return `You are a brand targeting expert analyzing text based on Act-On's brand guidelines. Focus specifically on audience alignment.
+
+<brand_guidelines>
+${brandGuidelines}
+</brand_guidelines>
+
+Analyze this text for target audience alignment:
+<input_text>
+${text}
+</input_text>
+
+Consider these key aspects:
+
+1. User vs. Buyer Focus:
+- Users: Marketing practitioners, hands-on platform users
+- Buyers: Decision-makers, strategic planners
+- Look for language, examples, and pain points that resonate with each group
+
+2. Customer Journey Stage:
+- Graduator: Moving from basic email to marketing automation, needs guidance
+- Disenfranchised: Experienced with MAP but frustrated, needs solutions
+- Analyze terminology complexity, assumed knowledge, and pain points addressed
+
+Provide your evaluation in this format:
+
+<target_audience_evaluation>
+<user_buyer_focus>
+<analysis>
+Detailed analysis of user vs. buyer targeting:
+- Specific language examples that indicate audience focus
+- Pain points and solutions addressed
+- Level of technical detail and strategic content
+</analysis>
+<score>75</score>
+</user_buyer_focus>
+
+<customer_type_focus>
+<analysis>
+Detailed analysis of graduator vs. disenfranchised targeting:
+- Knowledge level assumptions
+- Pain points addressed
+- Migration or transformation messaging
+</analysis>
+<score>75</score>
+</customer_type_focus>
+</target_audience_evaluation>`;
+}
+
+export function formatOverallEvaluation(text: string): string {
+  return `You are a brand alignment expert providing a comprehensive evaluation of text against Act-On's brand guidelines.
+
+<brand_guidelines>
+${brandGuidelines}
+</brand_guidelines>
+
+Analyze this text for overall brand alignment:
+<input_text>
+${text}
+</input_text>
+
+Provide a holistic evaluation considering:
+1. Overall brand alignment
+2. Key strengths in brand representation
+3. Specific areas for improvement
+4. Actionable suggestions for better alignment
+
+Format your response as follows:
+
+<overall_evaluation>
+<overall_score>
+<analysis>Provide a comprehensive analysis of how well the text aligns with Act-On's brand identity, citing specific examples</analysis>
+<score>75</score>
+</overall_score>
+
+<strengths>
+- [Specific strength with example]
+- [Specific strength with example]
+- [Specific strength with example]
+</strengths>
+
+<improvement_areas>
+- [Specific area for improvement with example]
+- [Specific area for improvement with example]
+- [Specific area for improvement with example]
+</improvement_areas>
+
+<suggestions>
+1. [Actionable suggestion with example of implementation]
+2. [Actionable suggestion with example of implementation]
+3. [Actionable suggestion with example of implementation]
+</suggestions>
+</overall_evaluation>`;
 }
 
 export function formatMessagingValuesEvaluation(text: string): string {
@@ -91,117 +204,4 @@ Provide your evaluation in this format:
 <score>75</score>
 </customer_type_focus>
 </target_audience>`;
-}
-
-// Parser functions for each evaluation type
-export function parseVoicePersonalityEvaluation(response: string): VoicePersonalityEvaluation {
-  const extractContent = (text: string, tag: string) => {
-    const regex = new RegExp(`<${tag}>(.*?)</${tag}>`, 's');
-    const match = text.match(regex);
-    return match ? match[1].trim() : '';
-  };
-
-  const extractScore = (text: string): number => {
-    const scoreContent = extractContent(text, 'score');
-    const numberMatch = scoreContent.match(/\d+/);
-    return numberMatch ? parseInt(numberMatch[0]) : 0;
-  };
-
-  const createEvaluation = (section: string) => ({
-    analysis: extractContent(section, 'analysis'),
-    score: extractScore(section)
-  });
-
-  const personalitySection = extractContent(response, 'personality_evaluation');
-  const voiceSection = extractContent(response, 'voice_evaluation');
-  const toneSection = extractContent(response, 'tone_evaluation');
-
-  return {
-    personalityEvaluation: {
-      supportiveChallenger: createEvaluation(
-        extractContent(personalitySection, 'supportive_challenger')
-      ),
-      whiteCollarMechanic: createEvaluation(
-        extractContent(personalitySection, 'white_collar_mechanic')
-      )
-    },
-    voiceEvaluation: {
-      naturalConversational: createEvaluation(
-        extractContent(voiceSection, 'natural_conversational')
-      ),
-      authenticApproachable: createEvaluation(
-        extractContent(voiceSection, 'authentic_approachable')
-      ),
-      genderNeutral: createEvaluation(
-        extractContent(voiceSection, 'gender_neutral')
-      ),
-      channelTailored: createEvaluation(
-        extractContent(voiceSection, 'channel_tailored')
-      )
-    },
-    toneEvaluation: createEvaluation(toneSection)
-  };
-}
-
-export function parseMessagingValuesEvaluation(response: string): MessagingValuesEvaluation {
-  const extractContent = (text: string, tag: string) => {
-    const regex = new RegExp(`<${tag}>(.*?)</${tag}>`, 's');
-    const match = text.match(regex);
-    return match ? match[1].trim() : '';
-  };
-
-  const extractScore = (text: string): number => {
-    const scoreContent = extractContent(text, 'score');
-    const numberMatch = scoreContent.match(/\d+/);
-    return numberMatch ? parseInt(numberMatch[0]) : 0;
-  };
-
-  const createEvaluation = (section: string) => ({
-    analysis: extractContent(section, 'analysis'),
-    score: extractScore(section)
-  });
-
-  // Extract sections
-  const messagingSection = extractContent(response, 'messaging_alignment');
-  const valueSection = extractContent(response, 'value_alignment');
-  const targetSection = extractContent(response, 'target_audience');
-
-  // Parse messaging pillars
-  const messagingPillars = messagingSection
-    .match(/<pillar[^>]*>[\s\S]*?<\/pillar>/g) || [];
-  
-  const parsedPillars = messagingPillars.map(pillar => {
-    const nameMatch = pillar.match(/name="([^"]+)"/);
-    return {
-      pillar: nameMatch ? nameMatch[1] : 'Unnamed Pillar',
-      analysis: extractContent(pillar, 'analysis'),
-      score: extractScore(pillar)
-    };
-  });
-
-  // Parse values
-  const values = valueSection
-    .match(/<value[^>]*>[\s\S]*?<\/value>/g) || [];
-  
-  const parsedValues = values.map(value => {
-    const nameMatch = value.match(/name="([^"]+)"/);
-    return {
-      value: nameMatch ? nameMatch[1] : 'Unnamed Value',
-      analysis: extractContent(value, 'analysis'),
-      score: extractScore(value)
-    };
-  });
-
-  return {
-    messagingAlignment: parsedPillars,
-    valueAlignment: parsedValues,
-    targetAudience: {
-      userBuyerFocus: createEvaluation(
-        extractContent(targetSection, 'user_buyer_focus')
-      ),
-      customerTypeFocus: createEvaluation(
-        extractContent(targetSection, 'customer_type_focus')
-      )
-    }
-  };
 }

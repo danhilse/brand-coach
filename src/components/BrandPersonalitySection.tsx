@@ -1,7 +1,6 @@
-
 // components/BrandPersonalitySection.tsx
-import { AnalysisSection } from './AnalysisSection';
 import type { VoicePersonalityEvaluation } from '@/lib/types';
+import { AnalysisSection } from './AnalysisSection';
 
 interface BrandPersonalitySectionProps {
   personalityEvaluation: VoicePersonalityEvaluation['personalityEvaluation'];
@@ -25,4 +24,4 @@ export const BrandPersonalitySection = ({
       colorClass="bg-purple-600"
     />
   </div>
-);
+); 

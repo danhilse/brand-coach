@@ -30,29 +30,47 @@ export interface VoicePersonalityEvaluation {
     };
     toneEvaluation: {
       analysis: string;
-      score: number; // 0-100 where 0 is fully supportive, 100 is fully challenging
+      score: number;
     };
   }
   
-  export interface MessagingValuesEvaluation {
-    messagingAlignment: Array<{
-      pillar: string;
+  export interface TargetAudienceEvaluation {
+    userBuyerFocus: {
       analysis: string;
       score: number;
-    }>;
-    valueAlignment: Array<{
-      value: string;
+    };
+    customerTypeFocus: {
       analysis: string;
       score: number;
-    }>;
-    targetAudience: {
-      userBuyerFocus: {
-        analysis: string;
-        score: number; // 0-100 where 0 is user-focused, 100 is buyer-focused
-      };
-      customerTypeFocus: {
-        analysis: string;
-        score: number; // 0-100 where 0 is graduator-focused, 100 is disenfranchised-focused
-      };
     };
   }
+  
+  export interface OverallEvaluation {
+    overallScore: {
+      analysis: string;
+      score: number;
+    };
+    strengths: string[];
+    improvementAreas: string[];
+    suggestions: string[];
+  }
+
+  export interface MessagingValuesEvaluation {
+  messagingAlignment: Array<{
+    pillar: string;
+    analysis: string;
+    score: number;
+  }>;
+  valueAlignment: Array<{
+    value: string;
+    analysis: string;
+    score: number;
+  }>;
+}
+
+export interface CompleteEvaluation {
+  voicePersonality: VoicePersonalityEvaluation;
+  targetAudience: TargetAudienceEvaluation;
+  messagingValues: MessagingValuesEvaluation;
+  overall: OverallEvaluation;
+}
