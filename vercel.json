@@ -1,0 +1,11 @@
+{
+    "functions": {
+      "app/api/evaluate/route.ts": {
+        "maxDuration": 30
+      },
+      "app/api/parse-file/route.ts": {
+        "maxDuration": 30,
+        "memory": 1024
+      }
+    }
+  }
