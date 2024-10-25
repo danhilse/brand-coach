@@ -38,7 +38,7 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-
+  
     try {
       const res = await fetch('/api/evaluate', {
         method: 'POST',
@@ -47,7 +47,14 @@ export default function Home() {
       });
       
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      
+      if (!res.ok) {
+        throw new Error(data.details || data.error || 'An error occurred');
+      }
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
       
       const evaluation = {
         voicePersonality: parseVoicePersonalityEvaluation(data.voicePersonality),
@@ -57,9 +64,9 @@ export default function Home() {
       };
       
       setEvaluation(evaluation);
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Failed to evaluate text. Please try again.');
+    } catch (error: any) {
+      console.error('Error details:', error);
+      setError(error.message || 'Failed to evaluate text. Please try again.');
     } finally {
       setIsLoading(false);
     }
