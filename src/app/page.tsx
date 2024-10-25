@@ -4,21 +4,25 @@ import { useState } from 'react';
 import type { 
   VoicePersonalityEvaluation, 
   TargetAudienceEvaluation,
+  MessagingValuesEvaluation,
   OverallEvaluation 
 } from '@/lib/types';
 import { 
   parseVoicePersonalityEvaluation, 
   parseTargetAudienceEvaluation,
+  parseMessagingValuesEvaluation,
   parseOverallEvaluation 
-} from '@/lib/parsers'; // Updated import from parsers instead of prompts
+} from '@/lib/parsers';
 import { BrandPersonalitySection } from '@/components/BrandPersonalitySection';
 import { VoiceAnalysisSection } from '@/components/VoiceAnalysisSection';
 import { TargetAudienceMatrix } from '@/components/TargetAudienceMatrix';
+import { MessagingValuesSection } from '@/components/MessagingValuesSection';
 import { OverallEvaluationSection } from '@/components/OverallEvaluation';
 
 interface Evaluation {
   voicePersonality: VoicePersonalityEvaluation;
   targetAudience: TargetAudienceEvaluation;
+  messagingValues: MessagingValuesEvaluation;
   overall: OverallEvaluation;
 }
  
@@ -46,6 +50,7 @@ export default function Home() {
       const evaluation = {
         voicePersonality: parseVoicePersonalityEvaluation(data.voicePersonality),
         targetAudience: parseTargetAudienceEvaluation(data.targetAudience),
+        messagingValues: parseMessagingValuesEvaluation(data.messagingValues),
         overall: parseOverallEvaluation(data.overall)
       };
       
@@ -96,7 +101,7 @@ export default function Home() {
           <div className="space-y-8">
             {/* Overall Evaluation */}
             <OverallEvaluationSection evaluation={evaluation.overall} />
-
+            
             {/* Voice & Personality Section */}
             <section className="space-y-6">
               <h2 className="text-2xl font-bold">Voice & Personality</h2>
@@ -104,6 +109,9 @@ export default function Home() {
               <VoiceAnalysisSection voiceEvaluation={evaluation.voicePersonality.voiceEvaluation} />
             </section>
 
+            {/* Messaging & Values Section */}
+            <MessagingValuesSection evaluation={evaluation.messagingValues} />
+            
             {/* Target Audience Section */}
             <section className="space-y-6">
               <h2 className="text-2xl font-bold">Target Audience</h2>

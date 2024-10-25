@@ -165,11 +165,24 @@ Format your response as follows:
 }
 
 export function formatMessagingValuesEvaluation(text: string): string {
-  return `You are a brand messaging expert analyzing text based on Act-On's brand guidelines. Focus on messaging pillars, values, and target audience alignment.
+  return `You are a brand messaging expert analyzing text based on Act-On's brand guidelines. Focus on messaging pillars and values alignment.
 
 <brand_guidelines>
 ${brandGuidelines}
 </brand_guidelines>
+
+Consider these key aspects:
+
+1. Messaging Pillars:
+- ACT-ON FUELS AGILE MARKETING
+- INNOVATIVE SOLUTIONS FOR INNOVATIVE MARKETERS
+- YOUR PARTNER IN MARKETING SUCCESS AT EVERY STAGE
+
+2. Brand Values:
+- Put People First
+- Be Yourself
+- Do Your Best (Together)
+- Make It Better
 
 Analyze this text:
 <input_text>
@@ -180,7 +193,7 @@ Provide your evaluation in this format:
 
 <messaging_alignment>
 <pillar name="[Pillar Name]">
-<analysis>Evaluate how well the text addresses this messaging pillar</analysis>
+<analysis>Provide specific examples of how the text addresses this messaging pillar</analysis>
 <score>75</score>
 </pillar>
 [Repeat for each relevant messaging pillar]
@@ -188,20 +201,9 @@ Provide your evaluation in this format:
 
 <value_alignment>
 <value name="[Value Name]">
-<analysis>Evaluate how well the text embodies this value</analysis>
+<analysis>Provide specific examples of how the text embodies this value</analysis>
 <score>75</score>
 </value>
 [Repeat for each relevant value]
-</value_alignment>
-
-<target_audience>
-<user_buyer_focus>
-<analysis>Analyze whether the text targets users or buyers</analysis>
-<score>75</score>
-</user_buyer_focus>
-<customer_type_focus>
-<analysis>Analyze whether the text targets graduators or disenfranchised customers</analysis>
-<score>75</score>
-</customer_type_focus>
-</target_audience>`;
+</value_alignment>`;
 }

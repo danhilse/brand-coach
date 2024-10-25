@@ -56,17 +56,17 @@ export interface VoicePersonalityEvaluation {
   }
 
   export interface MessagingValuesEvaluation {
-  messagingAlignment: Array<{
-    pillar: string;
-    analysis: string;
-    score: number;
-  }>;
-  valueAlignment: Array<{
-    value: string;
-    analysis: string;
-    score: number;
-  }>;
-}
+    messagingAlignment: Array<{
+      pillar: string;
+      analysis: string;
+      score: number;
+    }>;
+    valueAlignment: Array<{
+      value: string;
+      analysis: string;
+      score: number;
+    }>;
+  }
 
 export interface CompleteEvaluation {
   voicePersonality: VoicePersonalityEvaluation;

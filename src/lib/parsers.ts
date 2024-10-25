@@ -1,5 +1,10 @@
 // lib/parsers.ts
-import type { VoicePersonalityEvaluation, TargetAudienceEvaluation, OverallEvaluation } from './types';
+import type { 
+  VoicePersonalityEvaluation, 
+  TargetAudienceEvaluation, 
+  OverallEvaluation,
+  MessagingValuesEvaluation 
+} from './types';
 
 const extractContent = (text: string, tag: string) => {
   const regex = new RegExp(`<${tag}>(.*?)</${tag}>`, 's');
@@ -47,6 +52,42 @@ export function parseVoicePersonalityEvaluation(response: string): VoicePersonal
       )
     },
     toneEvaluation: createEvaluation(toneSection)
+  };
+}
+
+export function parseMessagingValuesEvaluation(response: string): MessagingValuesEvaluation {
+  const messagingSection = extractContent(response, 'messaging_alignment');
+  const valueSection = extractContent(response, 'value_alignment');
+
+  // Parse messaging pillars
+  const messagingPillars = messagingSection
+    .match(/<pillar[^>]*>[\s\S]*?<\/pillar>/g) || [];
+  
+  const parsedPillars = messagingPillars.map(pillar => {
+    const nameMatch = pillar.match(/name="([^"]+)"/);
+    return {
+      pillar: nameMatch ? nameMatch[1] : 'Unnamed Pillar',
+      analysis: extractContent(pillar, 'analysis'),
+      score: extractScore(pillar)
+    };
+  });
+
+  // Parse values
+  const values = valueSection
+    .match(/<value[^>]*>[\s\S]*?<\/value>/g) || [];
+  
+  const parsedValues = values.map(value => {
+    const nameMatch = value.match(/name="([^"]+)"/);
+    return {
+      value: nameMatch ? nameMatch[1] : 'Unnamed Value',
+      analysis: extractContent(value, 'analysis'),
+      score: extractScore(value)
+    };
+  });
+
+  return {
+    messagingAlignment: parsedPillars,
+    valueAlignment: parsedValues
   };
 }
 
