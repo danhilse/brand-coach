@@ -25,7 +25,6 @@ export async function POST(request: Request) {
     }
 
     try {
-      // Log formatted prompts
       console.log('Sending requests to Anthropic API...');
 
       // Make API calls one at a time to isolate any issues
@@ -53,12 +52,7 @@ export async function POST(request: Request) {
         temperature: 0.7,
         messages: [{ role: 'user', content: formatTargetAudienceEvaluation(text) }],
       }).catch(err => {
-        console.error('Target Audience Error:', {
-          message: err.message,
-          name: err.name,
-          status: err.status,
-          type: err.type
-        });
+        console.error('Target Audience Error:', err);
         throw err;
       });
       console.log('Target audience evaluation successful');
@@ -70,12 +64,7 @@ export async function POST(request: Request) {
         temperature: 0.7,
         messages: [{ role: 'user', content: formatMessagingValuesEvaluation(text) }],
       }).catch(err => {
-        console.error('Messaging Values Error:', {
-          message: err.message,
-          name: err.name,
-          status: err.status,
-          type: err.type
-        });
+        console.error('Messaging Values Error:', err);
         throw err;
       });
       console.log('Messaging values evaluation successful');
@@ -87,24 +76,24 @@ export async function POST(request: Request) {
         temperature: 0.7,
         messages: [{ role: 'user', content: formatOverallEvaluation(text) }],
       }).catch(err => {
-        console.error('Overall Evaluation Error:', {
-          message: err.message,
-          name: err.name,
-          status: err.status,
-          type: err.type
-        });
+        console.error('Overall Evaluation Error:', err);
         throw err;
       });
       console.log('Overall evaluation successful');
 
-      // Log successful completion
-      console.log('All evaluations completed successfully');
+      // Extract content safely
+      const getContent = (response: any) => {
+        if (response?.content?.[0]?.type === 'text') {
+          return response.content[0].text;
+        }
+        throw new Error('Unexpected response format from API');
+      };
 
       return NextResponse.json({ 
-        voicePersonality: voicePersonalityResponse.content[0].text,
-        targetAudience: targetAudienceResponse.content[0].text,
-        messagingValues: messagingValuesResponse.content[0].text,
-        overall: overallResponse.content[0].text
+        voicePersonality: getContent(voicePersonalityResponse),
+        targetAudience: getContent(targetAudienceResponse),
+        messagingValues: getContent(messagingValuesResponse),
+        overall: getContent(overallResponse)
       });
 
     } catch (apiError: any) {
