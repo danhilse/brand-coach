@@ -1,15 +1,10 @@
 {
-    "git": {
-      "deploymentEnabled": {
-        "main": true
-      }
-    },
     "functions": {
       "app/api/evaluate/route.ts": {
-        "maxDuration": 90
+        "maxDuration": 30
       },
       "app/api/parse-file/route.ts": {
-        "maxDuration": 90,
+        "maxDuration": 30,
         "memory": 1024
       }
     }
