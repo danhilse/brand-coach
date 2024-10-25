@@ -1,6 +1,6 @@
 // app/api/parse-file/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import pdf from 'pdf-parse';
+import { extractPdfText } from '@/lib/services/pdfService';
 
 export const config = {
   api: {
@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check file size (e.g., 10MB limit)
-    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    // Check file size
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       return NextResponse.json(
         { error: 'File size exceeds 10MB limit' },
@@ -42,9 +42,7 @@ export async function POST(request: NextRequest) {
       case 'pdf': {
         try {
           const arrayBuffer = await file.arrayBuffer();
-          const buffer = Buffer.from(arrayBuffer);
-          const data = await pdf(buffer);
-          text = data.text;
+          text = await extractPdfText(arrayBuffer);
           
           if (!text) {
             throw new Error('No text content found in PDF');
@@ -97,9 +95,9 @@ export async function POST(request: NextRequest) {
 
     text = text
       .trim()
-      .replace(/\n{3,}/g, '\n\n')
-      .replace(/\s{2,}/g, ' ')
-      .replace(/[^\S\n]+/g, ' ');
+      .replace(/\n{3,}/g, '\n\n')  // Replace multiple newlines with double newline
+      .replace(/\s{2,}/g, ' ')     // Replace multiple spaces with single space
+      .replace(/[^\S\n]+/g, ' ');  // Replace whitespace (except newlines) with single space
 
     if (!text.length) {
       return NextResponse.json(
