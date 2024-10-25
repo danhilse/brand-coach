@@ -86,6 +86,7 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
     min-h-[200px] 
     px-3 
     py-2
+    pr-10 /* Added padding to the right */
     border 
     rounded 
     font-['Open_Sans']

@@ -22,7 +22,7 @@ Please consider the following aspects in your evaluation:
 - Is it proactive in offering solutions?
 - Does it reflect the empathetic, encouraging, empowering, proactive, and innovative qualities described in the guidelines?
 
-2. White-Collar Mechanic personality:
+2. White-Collar Mechanic persona:
 - Does it show technical expertise while remaining approachable?
 - How well does it balance professionalism with hands-on knowledge?
 - Is it detail-oriented while maintaining accessibility?
@@ -33,6 +33,14 @@ Please consider the following aspects in your evaluation:
 - Authentic & Approachable: Does it convey confidence without arrogance? Is humor used appropriately?
 - Gender-Neutral & Inclusive: Does it avoid any exclusionary language and use gender-neutral pronouns?
 - Channel-Appropriate: Is the tone suitable for the content type, considering the Tone of Voice Spectrum provided in the guidelines?
+
+4. Challenging vs Supportive Balance:
+- Challenging elements: Identify instances where the content pushes readers to think differently, questions the status quo, or presents ambitious goals
+- Supportive elements: Identify instances where the content offers guidance, shows understanding, or provides reassurance
+- Calculate ratio: Determine the approximate percentage of challenging content on a 0-100 scale where:
+  • 0 = 100% supportive, 0% challenging
+  • 50 = equal balance (50% supportive, 50% challenging) 
+  • 100 = 100% challenging, 0% supportive
 
 Before beginning your evaluation, please complete the following steps:
 
@@ -107,15 +115,15 @@ Wrap your evaluation in the following tags:
   </channel_tailored>
 </voice_evaluation>
 
-<tone_evaluation>
+<challenging_supportive_evaluation>
   <analysis>
-    [Analyze the balance between supportive and challenging elements in the text, citing specific examples and referencing the Tone of Voice Spectrum in the guidelines.]
+    [Analyze the ratio of challenging to supportive content, with specific examples of each. Express findings as percentages (e.g., "The content is approximately 70% supportive and 30% challenging").]
   </analysis>
   <reflection>
-    [Reflect on your analysis and ensure your score accurately represents your detailed observations.]
+    [Break down how you calculated the challenging percentage that will be represented in the score.]
   </reflection>
-  <score>[0-100]</score>
-</tone_evaluation>
+  <score>[0-100, representing the percentage of challenging content]</score>
+</challenging_supportive_evaluation>
 
 After completing your evaluation, please review your scores and analyses to ensure they accurately reflect the brand guidelines and your detailed observations.`;
 }
@@ -140,10 +148,18 @@ Your analysis should focus on two key aspects:
 1. User vs. Buyer Focus:
    - Users: Marketing practitioners, hands-on platform users
    - Buyers: Decision-makers, strategic planners
+   Score interpretation: 
+   - 0 = Completely user-focused
+   - 50 = Equal user/buyer focus
+   - 100 = Completely buyer-focused
 
 2. Customer Journey Stage:
    - Graduator: Moving from basic email to marketing automation, needs guidance
    - Disenfranchised: Experienced with MAP but frustrated, needs solutions
+   Score interpretation:
+   - 0 = Completely graduator-focused
+   - 50 = Equal graduator/disenfranchised focus
+   - 100 = Completely disenfranchised-focused
 
 For each aspect, consider the following:
 
@@ -176,8 +192,12 @@ Detailed analysis of user vs. buyer targeting:
 - Specific language examples that indicate audience focus
 - Pain points and solutions addressed
 - Level of technical detail and strategic content
+- Express findings as approximate percentages (e.g., "The content is approximately 60% buyer-focused and 40% user-focused")
 </analysis>
-<score>75</score>
+<reflection>
+Break down how you calculated the buyer percentage that will be represented in the score.
+</reflection>
+<score>[0-100, where 50 is neutral user/buyer balance]</score>
 </user_buyer_focus>
 
 <customer_type_focus>
@@ -186,8 +206,12 @@ Detailed analysis of graduator vs. disenfranchised targeting:
 - Knowledge level assumptions
 - Pain points addressed
 - Migration or transformation messaging
+- Express findings as approximate percentages (e.g., "The content is approximately 70% graduator-focused and 30% disenfranchised-focused")
 </analysis>
-<score>75</score>
+<reflection>
+Break down how you calculated the disenfranchised percentage that will be represented in the score.
+</reflection>
+<score>[0-100, where 50 is neutral graduator/disenfranchised balance]</score>
 </customer_type_focus>
 </target_audience_evaluation>
 
@@ -267,7 +291,7 @@ ${brandGuidelines}
 Now, analyze the following text for overall brand alignment:
 
 <input_text>
-{{text}}
+${text}
 </input_text>
 
 Conduct a step-by-step analysis of the input text against the brand guidelines. For each step, wrap your analysis in <brand_analysis> tags:

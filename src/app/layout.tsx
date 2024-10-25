@@ -14,6 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* Remove the Geist font classes since we're using Open Sans */}
       <head>
         <link 
           href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" 
@@ -21,14 +22,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <div className="layout-container">
-          <nav className="side-nav bg-[var(--app-background)] border-r border-[var(--border)]">
-            {/* Side navigation content goes here */}
-          </nav>
-          <div className="main-content">
-            {children}
-          </div>
-        </div>
+        {children}
       </body>
     </html>
   );

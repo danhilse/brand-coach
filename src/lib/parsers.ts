@@ -26,7 +26,7 @@ const createEvaluation = (section: string) => ({
 export function parseVoicePersonalityEvaluation(response: string): VoicePersonalityEvaluation {
   const personalitySection = extractContent(response, 'personality_evaluation');
   const voiceSection = extractContent(response, 'voice_evaluation');
-  const toneSection = extractContent(response, 'tone_evaluation');
+  const toneSection = extractContent(response, 'challenging_supportive_evaluation');
 
   return {
     personalityEvaluation: {

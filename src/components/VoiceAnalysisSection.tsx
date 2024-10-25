@@ -1,5 +1,6 @@
 // components/VoiceAnalysisSection.tsx
 import { AnalysisSection } from './AnalysisSection';
+import { Card } from './Card';
 import type { VoicePersonalityEvaluation } from '@/lib/types';
 
 interface VoiceAnalysisSectionProps {
@@ -9,31 +10,33 @@ interface VoiceAnalysisSectionProps {
 export const VoiceAnalysisSection = ({ 
   voiceEvaluation 
 }: VoiceAnalysisSectionProps) => (
-  <div className="bg-white p-6 rounded-lg shadow">
-    <h3 className="text-xl font-bold mb-4">Voice Analysis</h3>
+  <Card>
+    <h3 className="text-[24px] leading-[36px] font-semibold text-[var(--text)] mb-4">
+      Voice Analysis
+    </h3>
     <AnalysisSection 
       title="Natural & Conversational"
       analysis={voiceEvaluation.naturalConversational.analysis}
       score={voiceEvaluation.naturalConversational.score}
-      colorClass="bg-blue-600"
+      colorClass="primary"
     />
     <AnalysisSection 
       title="Authentic & Approachable"
       analysis={voiceEvaluation.authenticApproachable.analysis}
       score={voiceEvaluation.authenticApproachable.score}
-      colorClass="bg-blue-600"
+      colorClass="primary"
     />
     <AnalysisSection 
       title="Gender-Neutral & Inclusive"
       analysis={voiceEvaluation.genderNeutral.analysis}
       score={voiceEvaluation.genderNeutral.score}
-      colorClass="bg-blue-600"
+      colorClass="primary"
     />
     <AnalysisSection 
       title="Channel-Appropriate"
-      analysis={voiceEvaluation.channelTailored.analysis} // Fixed the typo here
-      score={voiceEvaluation.channelTailored.score}      // And here
-      colorClass="bg-blue-600"
+      analysis={voiceEvaluation.channelTailored.analysis}
+      score={voiceEvaluation.channelTailored.score}
+      colorClass="primary"
     />
-  </div>
+  </Card>
 );

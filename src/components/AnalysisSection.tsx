@@ -5,18 +5,22 @@ interface AnalysisSectionProps {
   title: string;
   analysis: string;
   score: number;
-  colorClass?: string;
+  colorClass?: 'primary' | 'teal' | 'purple' | 'blue';
 }
 
 export const AnalysisSection = ({ 
   title, 
   analysis, 
   score,
-  colorClass
+  colorClass = 'primary'
 }: AnalysisSectionProps) => (
   <div className="mb-6">
-    <h3 className="text-lg font-semibold mb-2">{title}</h3>
+    <h3 className="text-[18px] leading-[26px] font-semibold text-[var(--text)] mb-2">
+      {title}
+    </h3>
     <ScoreBar score={score} label="Score" colorClass={colorClass} />
-    <p className="text-gray-700">{analysis}</p>
+    <p className="text-[14px] leading-[20px] text-[var(--text-light)]">
+      {analysis}
+    </p>
   </div>
 );

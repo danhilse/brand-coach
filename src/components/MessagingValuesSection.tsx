@@ -1,6 +1,7 @@
 // components/MessagingValuesSection.tsx
 import type { MessagingValuesEvaluation } from '@/lib/types';
 import { AnalysisSection } from './AnalysisSection';
+import { Card } from './Card';
 
 interface MessagingValuesSectionProps {
   evaluation: MessagingValuesEvaluation;
@@ -9,35 +10,39 @@ interface MessagingValuesSectionProps {
 export const MessagingValuesSection = ({ evaluation }: MessagingValuesSectionProps) => {
   return (
     <section className="space-y-6">
-      <h2 className="text-2xl font-bold">Messaging & Values</h2>
+      <h2 className="text-[28px] leading-[40px] font-semibold text-[var(--text)]">
+        Messaging & Values
+      </h2>
       
-      {/* Messaging Pillars */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-xl font-bold mb-4">Messaging Pillars</h3>
+      <Card>
+        <h3 className="text-[24px] leading-[36px] font-semibold text-[var(--text)] mb-4">
+          Messaging Pillars
+        </h3>
         {evaluation.messagingAlignment.map((pillar, index) => (
           <AnalysisSection 
             key={index}
             title={pillar.pillar}
             analysis={pillar.analysis}
             score={pillar.score}
-            colorClass="bg-indigo-600"
+            colorClass="blue"
           />
         ))}
-      </div>
+      </Card>
 
-      {/* Values */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-xl font-bold mb-4">Value Alignment</h3>
+      <Card>
+        <h3 className="text-[24px] leading-[36px] font-semibold text-[var(--text)] mb-4">
+          Value Alignment
+        </h3>
         {evaluation.valueAlignment.map((value, index) => (
           <AnalysisSection 
             key={index}
             title={value.value}
             analysis={value.analysis}
             score={value.score}
-            colorClass="bg-teal-600"
+            colorClass="teal"
           />
         ))}
-      </div>
+      </Card>
     </section>
   );
 };

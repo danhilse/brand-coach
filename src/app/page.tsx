@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import type { 
   VoicePersonalityEvaluation, 
   TargetAudienceEvaluation,
@@ -75,6 +76,16 @@ export default function Home() {
   return (
     <main className="container-acton py-8">
       <div>
+                {/* Add the logo image here */}
+          <div className="mb-6 flex">
+            <Image 
+              src="/logo.png" 
+              alt="Logo" 
+              width={150} 
+              height={0} 
+              priority 
+            />
+        </div>
         <h1 className="mb-6">Brand Coach</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4 mb-8">
@@ -108,12 +119,13 @@ export default function Home() {
               <BrandPersonalitySection 
                 personalityEvaluation={evaluation.voicePersonality.personalityEvaluation} 
               />
-              <VoiceAnalysisSection 
-                voiceEvaluation={evaluation.voicePersonality.voiceEvaluation} 
-              />
               <ToneSpectrumSection 
                 toneEvaluation={evaluation.voicePersonality.toneEvaluation} 
               />
+              <VoiceAnalysisSection 
+                voiceEvaluation={evaluation.voicePersonality.voiceEvaluation} 
+              />
+
             </section>
 
             <MessagingValuesSection evaluation={evaluation.messagingValues} />

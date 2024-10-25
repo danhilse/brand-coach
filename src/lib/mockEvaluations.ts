@@ -43,6 +43,15 @@ const mockEvaluations: Record<string, string> = {
       <reflection>Score indicates good channel alignment.</reflection>
       <score>85</score>
     </channel_tailored>
+        <tone_evaluation>
+      <analysis>
+        The content demonstrates a balanced approach to tone, leaning slightly towards the supportive end of the spectrum. 
+        This aligns well with email marketing and blog content guidelines, striking an effective balance between being 
+        helpful and directing the audience towards specific actions. Consider adjusting the tone to be slightly more 
+        supportive when discussing technical features or implementation details.
+      </analysis>
+      <score>35</score>
+    </tone_evaluation>
   </voice_evaluation>`,
   
     targetAudience: `<target_audience_evaluation>
