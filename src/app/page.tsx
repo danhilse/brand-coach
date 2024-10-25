@@ -34,11 +34,13 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+// In your page.tsx handleSubmit function:
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-  
+
     try {
       const res = await fetch('/api/evaluate', {
         method: 'POST',
@@ -48,12 +50,12 @@ export default function Home() {
       
       const data = await res.json();
       
-      if (!res.ok) {
-        throw new Error(data.details || data.error || 'An error occurred');
-      }
-      
-      if (data.error) {
-        throw new Error(data.error);
+      if (!res.ok || data.error) {
+        console.error('API Error Response:', data);
+        throw new Error(
+          `Error ${data.errorStatus || res.status}: ${data.details || data.error || 'Unknown error'}\n` +
+          `Type: ${data.errorType || 'Unknown'}`
+        );
       }
       
       const evaluation = {
@@ -65,7 +67,7 @@ export default function Home() {
       
       setEvaluation(evaluation);
     } catch (error: any) {
-      console.error('Error details:', error);
+      console.error('Evaluation Error:', error);
       setError(error.message || 'Failed to evaluate text. Please try again.');
     } finally {
       setIsLoading(false);
