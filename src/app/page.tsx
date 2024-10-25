@@ -13,6 +13,7 @@ import {
   parseMessagingValuesEvaluation,
   parseOverallEvaluation 
 } from '@/lib/parsers';
+import { DocumentInput } from '@/components/DocumentInput';
 import { BrandPersonalitySection } from '@/components/BrandPersonalitySection';
 import { VoiceAnalysisSection } from '@/components/VoiceAnalysisSection';
 import { ToneSpectrumSection } from '@/components/ToneSpectrumSection';
@@ -26,7 +27,7 @@ interface Evaluation {
   messagingValues: MessagingValuesEvaluation;
   overall: OverallEvaluation;
 }
- 
+
 export default function Home() {
   const [input, setInput] = useState('');
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
@@ -70,18 +71,11 @@ export default function Home() {
         <h1 className="text-3xl font-bold mb-6">Brand Coach</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4 mb-8">
-          <div>
-            <label htmlFor="text" className="block text-sm font-medium mb-2">
-              Enter text to evaluate:
-            </label>
-            <textarea
-              id="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="w-full min-h-[200px] p-3 border rounded-lg"
-              placeholder="Paste your text here..."
-            />
-          </div>
+          <DocumentInput 
+            value={input}
+            onChange={setInput}
+            onError={setError}
+          />
           
           <button
             type="submit"
@@ -100,10 +94,8 @@ export default function Home() {
 
         {evaluation && (
           <div className="space-y-8">
-            {/* Overall Evaluation */}
             <OverallEvaluationSection evaluation={evaluation.overall} />
             
-            {/* Voice & Personality Section */}
             <section className="space-y-6">
               <h2 className="text-2xl font-bold">Voice & Personality</h2>
               <BrandPersonalitySection personalityEvaluation={evaluation.voicePersonality.personalityEvaluation} />
@@ -111,10 +103,8 @@ export default function Home() {
               <ToneSpectrumSection toneEvaluation={evaluation.voicePersonality.toneEvaluation} />
             </section>
 
-            {/* Messaging & Values Section */}
             <MessagingValuesSection evaluation={evaluation.messagingValues} />
             
-            {/* Target Audience Section */}
             <section className="space-y-6">
               <h2 className="text-2xl font-bold">Target Audience</h2>
               <TargetAudienceMatrix evaluation={evaluation.targetAudience} />
