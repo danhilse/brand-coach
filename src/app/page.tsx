@@ -15,6 +15,7 @@ import {
 } from '@/lib/parsers';
 import { BrandPersonalitySection } from '@/components/BrandPersonalitySection';
 import { VoiceAnalysisSection } from '@/components/VoiceAnalysisSection';
+import { ToneSpectrumSection } from '@/components/ToneSpectrumSection';
 import { TargetAudienceMatrix } from '@/components/TargetAudienceMatrix';
 import { MessagingValuesSection } from '@/components/MessagingValuesSection';
 import { OverallEvaluationSection } from '@/components/OverallEvaluation';
@@ -107,6 +108,7 @@ export default function Home() {
               <h2 className="text-2xl font-bold">Voice & Personality</h2>
               <BrandPersonalitySection personalityEvaluation={evaluation.voicePersonality.personalityEvaluation} />
               <VoiceAnalysisSection voiceEvaluation={evaluation.voicePersonality.voiceEvaluation} />
+              <ToneSpectrumSection toneEvaluation={evaluation.voicePersonality.toneEvaluation} />
             </section>
 
             {/* Messaging & Values Section */}
