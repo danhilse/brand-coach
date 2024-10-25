@@ -1,4 +1,3 @@
-// components/DocumentInput.tsx
 import { useState, useRef } from 'react';
 import { Paperclip } from 'lucide-react';
 
@@ -15,7 +14,6 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
   const handleFile = async (file: File) => {
     if (!file) return;
 
-    // Check file extension instead of type
     const extension = file.name.toLowerCase().split('.').pop();
     const allowedExtensions = ['txt', 'pdf', 'doc', 'docx'];
 
@@ -28,7 +26,6 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
       const formData = new FormData();
       formData.append('file', file);
 
-      // Fixed API endpoint URL - removed /route
       const res = await fetch('/api/parse-file', {
         method: 'POST',
         body: formData,
@@ -80,18 +77,43 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
     const file = e.target.files?.[0];
     if (file) {
       await handleFile(file);
-      // Reset file input
       e.target.value = '';
     }
   };
 
+  const baseInputStyles = `
+    w-full 
+    min-h-[200px] 
+    px-3 
+    py-2
+    border 
+    rounded 
+    font-['Open_Sans']
+    text-[var(--text)]
+    bg-[var(--white)]
+    placeholder:text-[var(--text-light)]
+    focus:outline-none
+    focus:border-[var(--primary-base)]
+    focus:shadow-[0_0_0_2px_rgba(0,186,190,0.2)]
+  `;
+
+  const dragStyles = isDragging ? `
+    border-[var(--primary-base)]
+  ` : `
+    border-[var(--border)]
+    hover:border-[var(--dark-blue-base)]
+  `;
+
   return (
     <div className="relative">
-      <label htmlFor="text" className="block text-sm font-medium mb-2">
+      <label 
+        htmlFor="text" 
+        className="block mb-2 text-[14px] leading-[20px] font-semibold text-[var(--text)]"
+      >
         Enter text to evaluate:
       </label>
       <div 
-        className={`relative ${isDragging ? 'border-blue-500' : 'border-gray-300'}`}
+        className={`relative ${isDragging ? 'border-[var(--primary-base)]' : ''}`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
@@ -101,13 +123,24 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
           id="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full min-h-[200px] p-3 pr-12 border rounded-lg"
+          className={`${baseInputStyles} ${dragStyles}`}
           placeholder="Paste your text here or drag and drop a file..."
         />
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="absolute top-2 right-2 p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+          className={`
+            absolute 
+            top-2 
+            right-2 
+            p-2 
+            text-[var(--text-light)]
+            hover:text-[var(--text)] 
+            rounded-full 
+            hover:bg-[var(--table-hover-1)]
+            transition-colors
+            duration-200
+          `}
           title="Attach file"
         >
           <Paperclip className="w-4 h-4" />
@@ -121,8 +154,20 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
         />
       </div>
       {isDragging && (
-        <div className="absolute inset-0 border-2 border-blue-500 rounded-lg bg-blue-50 bg-opacity-50 flex items-center justify-center pointer-events-none">
-          <p className="text-blue-500 font-medium">Drop file here</p>
+        <div className={`
+          absolute 
+          inset-0 
+          border-2 
+          border-[var(--primary-base)] 
+          rounded 
+          bg-[var(--table-hover-1)]
+          bg-opacity-50 
+          flex 
+          items-center 
+          justify-center 
+          pointer-events-none
+        `}>
+          <p className="text-[var(--primary-base)] font-semibold">Drop file here</p>
         </div>
       )}
     </div>

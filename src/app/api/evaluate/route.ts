@@ -1,22 +1,43 @@
-// app/api/evaluate/route.ts
-import { Anthropic } from '@anthropic-ai/sdk';
+// app/api/evaluate/test/route.ts
 import { NextResponse } from 'next/server';
-import { 
-  formatVoicePersonalityEvaluation, 
-  formatTargetAudienceEvaluation,
-  formatMessagingValuesEvaluation,
-  formatOverallEvaluation 
-} from '@/lib/prompts';
+import { mockEvaluations } from '@/lib/mockEvaluations';
+
+type EvaluationType = keyof typeof mockEvaluations;
+
+interface EvaluationConfig {
+  name: string;
+}
+
+const evaluationConfigs: Record<EvaluationType, EvaluationConfig> = {
+  voicePersonality: {
+    name: 'Voice Personality'
+  },
+  targetAudience: {
+    name: 'Target Audience'
+  },
+  messagingValues: {
+    name: 'Messaging Values'
+  },
+  overall: {
+    name: 'Overall'
+  }
+};
+
+async function performMockEvaluation(
+  text: string, 
+  type: EvaluationType
+): Promise<string> {
+  const config = evaluationConfigs[type];
+  console.log(`Mock ${config.name} evaluation...`);
+  
+  // Simulate some processing time (optional, remove if not needed)
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  return mockEvaluations[type];
+}
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    
-    // Initialize Anthropic
-    const anthropic = new Anthropic({
-      apiKey: apiKey
-    });
-
     const { text } = await request.json();
     console.log('Received text length:', text?.length);
 
@@ -25,108 +46,35 @@ export async function POST(request: Request) {
     }
 
     try {
-      console.log('Sending requests to Anthropic API...');
-
-      // Make API calls one at a time to isolate any issues
-      console.log('Requesting voice personality evaluation...');
-      const voicePersonalityResponse = await anthropic.messages.create({
-        model: 'claude-3-opus-20240229',
-        max_tokens: 2048,
-        temperature: 0.7,
-        messages: [{ role: 'user', content: formatVoicePersonalityEvaluation(text) }],
-      }).catch(err => {
-        console.error('Voice Personality Error:', {
-          message: err.message,
-          name: err.name,
-          status: err.status,
-          type: err.type
-        });
-        throw err;
-      });
-      console.log('Voice personality evaluation successful');
-
-      console.log('Requesting target audience evaluation...');
-      const targetAudienceResponse = await anthropic.messages.create({
-        model: 'claude-3-opus-20240229',
-        max_tokens: 2048,
-        temperature: 0.7,
-        messages: [{ role: 'user', content: formatTargetAudienceEvaluation(text) }],
-      }).catch(err => {
-        console.error('Target Audience Error:', err);
-        throw err;
-      });
-      console.log('Target audience evaluation successful');
-
-      console.log('Requesting messaging values evaluation...');
-      const messagingValuesResponse = await anthropic.messages.create({
-        model: 'claude-3-opus-20240229',
-        max_tokens: 2048,
-        temperature: 0.7,
-        messages: [{ role: 'user', content: formatMessagingValuesEvaluation(text) }],
-      }).catch(err => {
-        console.error('Messaging Values Error:', err);
-        throw err;
-      });
-      console.log('Messaging values evaluation successful');
-
-      console.log('Requesting overall evaluation...');
-      const overallResponse = await anthropic.messages.create({
-        model: 'claude-3-opus-20240229',
-        max_tokens: 2048,
-        temperature: 0.7,
-        messages: [{ role: 'user', content: formatOverallEvaluation(text) }],
-      }).catch(err => {
-        console.error('Overall Evaluation Error:', err);
-        throw err;
-      });
-      console.log('Overall evaluation successful');
-
-      // Extract content safely
-      const getContent = (response: any) => {
-        if (response?.content?.[0]?.type === 'text') {
-          return response.content[0].text;
-        }
-        throw new Error('Unexpected response format from API');
-      };
-
-      return NextResponse.json({ 
-        voicePersonality: getContent(voicePersonalityResponse),
-        targetAudience: getContent(targetAudienceResponse),
-        messagingValues: getContent(messagingValuesResponse),
-        overall: getContent(overallResponse)
-      });
-
-    } catch (apiError: any) {
-      console.error('API Error Details:', {
-        message: apiError.message,
-        name: apiError.name,
-        type: apiError.type,
-        status: apiError.status,
-        stack: apiError.stack
-      });
+      console.log('Starting mock evaluation process...');
       
+      const evaluationResults = await Promise.all(
+        (Object.keys(mockEvaluations) as EvaluationType[]).map(async (type) => {
+          const result = await performMockEvaluation(text, type);
+          return [type, result];
+        })
+      );
+
+      return NextResponse.json(
+        Object.fromEntries(evaluationResults)
+      );
+
+    } catch (error: any) {
+      console.error('Mock Evaluation Error:', error);
       return NextResponse.json(
         { 
           error: 'Failed to process text',
-          details: `API Error (${apiError.type}): ${apiError.message}`,
-          errorType: apiError.type,
-          errorStatus: apiError.status
+          details: error.message
         },
-        { status: apiError.status || 500 }
+        { status: 500 }
       );
     }
   } catch (error: any) {
-    console.error('Server Error Details:', {
-      message: error.message,
-      name: error.name,
-      stack: error.stack
-    });
-    
+    console.error('Server Error:', error);
     return NextResponse.json(
       { 
         error: 'Server error occurred',
-        details: error.message,
-        errorType: error.name
+        details: error.message
       },
       { status: 500 }
     );

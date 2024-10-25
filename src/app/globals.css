@@ -1,21 +1,241 @@
+/* globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors - Primary */
+  --primary-base: #00babe;
+  --primary-hover: #08A2A5;
+  --primary-disabled: #99E3E5;
+  --white: #FFFFFF;
+  --text: #444444;
+  --text-light: #767676;
+  --link-text: #007B80;
+  
+  /* Colors - Secondary */
+  --dark-blue-base: #304A71;
+  --app-background: #F7F9FB;
+  --dark-mode-text: #C1C9D4;
+  --border: #E3E3E3;
+  --table-hover-1: #F2FBFB;
+  --table-hover-2: #E5F9F9;
+  
+  /* System Colors */
+  --alert-base: #F25656;
+  --success-base: #69B466;
+  --highlight-base: #FBFFA3;
+  --warning-base: #FFCD00;
+  
+  /* Shadows */
+  --shadow-default: 0 2px 4px rgba(0, 0, 0, 0.12);
+  
+  /* Line Heights */
+  --line-height-10: 16px;
+  --line-height-12: 18px;
+  --line-height-14: 20px;
+  --line-height-16: 24px;
+  --line-height-18: 26px;
+  --line-height-24: 36px;
+  --line-height-28: 40px;
+
+  /* Layout Variables */
+  --side-nav-width: 220px;
+  --horizontal-padding: 24px;
+  --content-max-width: 997px;
+  --content-min-width: 837px;
+  
+  
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
+/* Base Styles */
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--app-background);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  line-height: var(--line-height-14);
+}
+
+/* Typography */
+.text-tiny {
+  font-size: 10px;
+  line-height: var(--line-height-10);
+}
+
+.text-small {
+  font-size: 12px;
+  line-height: var(--line-height-12);
+}
+
+.text-body {
+  font-size: 14px;
+  line-height: var(--line-height-14);
+}
+
+.text-large {
+  font-size: 16px;
+  line-height: var(--line-height-16);
+}
+
+h1, .h1 {
+  font-size: 28px;
+  line-height: var(--line-height-28);
+  font-weight: 600;
+  color: var(--text);
+}
+
+h2, .h2 {
+  font-size: 24px;
+  line-height: var(--line-height-24);
+  font-weight: 600;
+  color: var(--text);
+}
+
+h3, .h3 {
+  font-size: 18px;
+  line-height: var(--line-height-18);
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Links */
+a {
+  color: var(--link-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Container */
+.container-acton {
+  max-width: 997px;
+  padding: 0 24px;
+  margin: 0 auto;
+}
+
+.container-acton-full {
+  padding: 0 24px;
+  margin: 0 auto;
+}
+
+/* Form Elements */
+.input-acton {
+  height: 36px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: var(--line-height-14);
+  color: var(--text);
+}
+
+.input-acton:hover {
+  border-color: var(--dark-blue-base);
+}
+
+.input-acton:focus {
+  border-color: var(--primary-base);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 186, 190, 0.2);
+}
+
+/* Buttons */
+.btn-acton {
+  height: 36px;
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: var(--line-height-14);
+  transition: all 0.2s ease;
+}
+
+.btn-acton-primary {
+  background-color: var(--primary-base);
+  color: var(--white);
+}
+
+.btn-acton-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-acton-primary:disabled {
+  background-color: var(--primary-disabled);
+  cursor: not-allowed;
+}
+
+.btn-acton-secondary {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn-acton-secondary:hover {
+  background-color: var(--table-hover-1);
+  border-color: var(--primary-base);
+}
+
+/* Score Bar Custom Styles */
+.score-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background-color: var(--primary-base);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+/* Main Layout Container */
+.layout-container {
+  display: flex;
+  min-width: 1105px; /* 837px + 48px padding + 220px nav */
+}
+
+/* Side Navigation */
+.side-nav {
+  width: var(--side-nav-width);
+  flex-shrink: 0;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+/* Main Content Area */
+.main-content {
+  margin-left: var(--side-nav-width);
+  width: calc(100% - var(--side-nav-width));
+  min-width: calc(var(--content-min-width) + (var(--horizontal-padding) * 2));
+}
+
+/* Content Container - Standard */
+.container-acton {
+  max-width: var(--content-max-width);
+  min-width: var(--content-min-width);
+  margin: 0 auto;
+  padding: 0 var(--horizontal-padding);
+}
+
+/* Content Container - Full Width */
+.container-acton-full {
+  width: 100%;
+  padding: 0 var(--horizontal-padding);
+}
+
+/* Utility class for content that needs to respect max-width */
+.respect-max-width {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
 }

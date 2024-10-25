@@ -34,8 +34,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-// In your page.tsx handleSubmit function:
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
@@ -75,9 +73,9 @@ export default function Home() {
   }
 
   return (
-    <main className="p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Brand Coach</h1>
+    <main className="container-acton py-8">
+      <div>
+        <h1 className="mb-6">Brand Coach</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4 mb-8">
           <DocumentInput 
@@ -89,14 +87,14 @@ export default function Home() {
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="btn-acton btn-acton-primary w-full"
           >
             {isLoading ? 'Evaluating...' : 'Evaluate'}
           </button>
         </form>
 
         {error && (
-          <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-[var(--alert-base)] bg-opacity-10 border border-[var(--alert-base)] text-[var(--alert-base)] px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
@@ -106,16 +104,22 @@ export default function Home() {
             <OverallEvaluationSection evaluation={evaluation.overall} />
             
             <section className="space-y-6">
-              <h2 className="text-2xl font-bold">Voice & Personality</h2>
-              <BrandPersonalitySection personalityEvaluation={evaluation.voicePersonality.personalityEvaluation} />
-              <VoiceAnalysisSection voiceEvaluation={evaluation.voicePersonality.voiceEvaluation} />
-              <ToneSpectrumSection toneEvaluation={evaluation.voicePersonality.toneEvaluation} />
+              <h2>Voice & Personality</h2>
+              <BrandPersonalitySection 
+                personalityEvaluation={evaluation.voicePersonality.personalityEvaluation} 
+              />
+              <VoiceAnalysisSection 
+                voiceEvaluation={evaluation.voicePersonality.voiceEvaluation} 
+              />
+              <ToneSpectrumSection 
+                toneEvaluation={evaluation.voicePersonality.toneEvaluation} 
+              />
             </section>
 
             <MessagingValuesSection evaluation={evaluation.messagingValues} />
             
             <section className="space-y-6">
-              <h2 className="text-2xl font-bold">Target Audience</h2>
+              <h2>Target Audience</h2>
               <TargetAudienceMatrix evaluation={evaluation.targetAudience} />
             </section>
           </div>
