@@ -1,27 +1,36 @@
 // lib/services/pdfService.ts
-import * as pdfjsLib from 'pdfjs-dist';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 
-// Set worker path for pdf.js
+// Configure the worker
 if (typeof window === 'undefined') {
   // Server-side
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  GlobalWorkerOptions.workerSrc = 'pdf.worker.js';
 }
 
 export async function extractPdfText(buffer: ArrayBuffer): Promise<string> {
   try {
-    // Load the PDF document
-    const loadingTask = pdfjsLib.getDocument({ data: buffer });
+    // Disable worker to run in Node.js environment
+    const loadingTask = getDocument({
+      data: buffer,
+      useWorkerFetch: false,
+      isEvalSupported: false,
+      useSystemFonts: true,
+      disableFontFace: true, // Disable font loading
+      standardFontDataUrl: 'pdf.worker.js', // Dummy URL for fonts
+    });
+
     const doc = await loadingTask.promise;
-    
     let fullText = '';
 
-    // Extract text from each page
+    // Get text content from all pages
     for (let i = 1; i <= doc.numPages; i++) {
       const page = await doc.getPage(i);
-      const content = await page.getTextContent();
-      const pageText = content.items
-        .map((item: any) => 'str' in item ? item.str : '')
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .filter((item: any) => item.str)
+        .map((item: any) => item.str)
         .join(' ');
+      
       fullText += pageText + '\n';
     }
 

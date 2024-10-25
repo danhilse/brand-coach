@@ -1,6 +1,12 @@
 // app/api/parse-file/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { extractPdfText } from '@/lib/services/pdfService';
+import { configurePdfWorker } from '@/lib/config/pdfWorkerConfig';
+
+// Configure the PDF worker
+configurePdfWorker();
+
+export const runtime = 'nodejs';
 
 export const config = {
   api: {
@@ -8,6 +14,7 @@ export const config = {
     responseLimit: '10mb',
   },
 };
+
 
 export async function POST(request: NextRequest) {
   try {
