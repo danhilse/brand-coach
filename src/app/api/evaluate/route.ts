@@ -1,76 +1,43 @@
-// app/api/evaluate/route.ts
-import { Anthropic } from '@anthropic-ai/sdk';
+// app/api/evaluate/test/route.ts
 import { NextResponse } from 'next/server';
-import { 
-  formatVoicePersonalityEvaluation, 
-  formatTargetAudienceEvaluation,
-  formatMessagingValuesEvaluation,
-  formatOverallEvaluation 
-} from '@/lib/prompts';
+import { mockEvaluations } from '@/lib/mockEvaluations';
 
-type EvaluationType = 'voicePersonality' | 'targetAudience' | 'messagingValues' | 'overall';
+type EvaluationType = keyof typeof mockEvaluations;
 
 interface EvaluationConfig {
-  formatter: (text: string) => string;
   name: string;
 }
 
 const evaluationConfigs: Record<EvaluationType, EvaluationConfig> = {
   voicePersonality: {
-    formatter: formatVoicePersonalityEvaluation,
     name: 'Voice Personality'
   },
   targetAudience: {
-    formatter: formatTargetAudienceEvaluation,
     name: 'Target Audience'
   },
   messagingValues: {
-    formatter: formatMessagingValuesEvaluation,
     name: 'Messaging Values'
   },
   overall: {
-    formatter: formatOverallEvaluation,
     name: 'Overall'
   }
 };
 
-async function performEvaluation(
-  anthropic: Anthropic, 
+async function performMockEvaluation(
   text: string, 
   type: EvaluationType
 ): Promise<string> {
   const config = evaluationConfigs[type];
-  console.log(`Requesting ${config.name} evaluation...`);
+  console.log(`Mock ${config.name} evaluation...`);
   
-  try {
-    const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 2048,
-      temperature: 0.3,
-      messages: [{ role: 'user', content: config.formatter(text) }],
-    });
-
-    if (response?.content?.[0]?.type === 'text') {
-      console.log(`${config.name} evaluation successful`);
-      return response.content[0].text;
-    }
-    throw new Error('Unexpected response format from API');
-  } catch (err: any) {
-    console.error(`${config.name} Error:`, {
-      message: err.message,
-      name: err.name,
-      status: err.status,
-      type: err.type
-    });
-    throw err;
-  }
+  // Simulate some processing time (optional, remove if not needed)
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  return mockEvaluations[type];
 }
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    const anthropic = new Anthropic({ apiKey });
-
     const { text } = await request.json();
     console.log('Received text length:', text?.length);
 
@@ -79,11 +46,11 @@ export async function POST(request: Request) {
     }
 
     try {
-      console.log('Starting evaluation process...');
+      console.log('Starting mock evaluation process...');
       
       const evaluationResults = await Promise.all(
-        Object.keys(evaluationConfigs).map(async (type) => {
-          const result = await performEvaluation(anthropic, text, type as EvaluationType);
+        (Object.keys(mockEvaluations) as EvaluationType[]).map(async (type) => {
+          const result = await performMockEvaluation(text, type);
           return [type, result];
         })
       );
@@ -92,37 +59,22 @@ export async function POST(request: Request) {
         Object.fromEntries(evaluationResults)
       );
 
-    } catch (apiError: any) {
-      console.error('API Error Details:', {
-        message: apiError.message,
-        name: apiError.name,
-        type: apiError.type,
-        status: apiError.status,
-        stack: apiError.stack
-      });
-      
+    } catch (error: any) {
+      console.error('Mock Evaluation Error:', error);
       return NextResponse.json(
         { 
           error: 'Failed to process text',
-          details: `API Error (${apiError.type}): ${apiError.message}`,
-          errorType: apiError.type,
-          errorStatus: apiError.status
+          details: error.message
         },
-        { status: apiError.status || 500 }
+        { status: 500 }
       );
     }
   } catch (error: any) {
-    console.error('Server Error Details:', {
-      message: error.message,
-      name: error.name,
-      stack: error.stack
-    });
-    
+    console.error('Server Error:', error);
     return NextResponse.json(
       { 
         error: 'Server error occurred',
-        details: error.message,
-        errorType: error.name
+        details: error.message
       },
       { status: 500 }
     );

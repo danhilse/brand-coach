@@ -21,6 +21,7 @@ import { ToneSpectrumSection } from '@/components/ToneSpectrumSection';
 import { TargetAudienceMatrix } from '@/components/TargetAudienceMatrix';
 import { MessagingValuesSection } from '@/components/MessagingValuesSection';
 import { OverallEvaluationSection } from '@/components/OverallEvaluation';
+import { ApiToggle } from '@/components/ApiToggle';
 
 interface Evaluation {
   voicePersonality: VoicePersonalityEvaluation;
@@ -34,6 +35,7 @@ export default function Home() {
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [activeApi, setActiveApi] = useState<'anthropic' | 'openai'>('anthropic');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,7 +46,7 @@ export default function Home() {
       const res = await fetch('/api/evaluate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: input }),
+        body: JSON.stringify({ text: input, api: activeApi }),
       });
       
       const data = await res.json();
@@ -76,18 +78,24 @@ export default function Home() {
   return (
     <main className="container-acton py-8">
       <div>
-                {/* Add the logo image here */}
-          <div className="mb-6 flex">
-            <Image 
-              src="/logo.png" 
-              alt="Logo" 
-              width={150} 
-              height={0} 
-              priority 
-            />
+        <div className="mb-6 flex pt-8">
+          <Image 
+            src="/logo.png" 
+            alt="Logo" 
+            width={200} 
+            height={0} 
+            priority 
+          />
         </div>
-        <h1 className="mb-6">Brand Coach</h1>
+        {/* <h1 className="mb-6">Brand Coach</h1> */}
         
+        {/* <ApiToggle 
+          activeApi={activeApi} 
+          onToggle={setActiveApi} 
+        /> */}
+
+        
+
         <form onSubmit={handleSubmit} className="space-y-4 mb-8">
           <DocumentInput 
             value={input}
