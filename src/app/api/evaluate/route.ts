@@ -1,56 +1,139 @@
-// app/api/evaluate/test/route.ts
+// app/api/evaluate/route.ts
 import { NextResponse } from 'next/server';
-import { mockEvaluations } from '@/lib/mockEvaluations';
+import { 
+  formatVoicePersonalityEvaluation, 
+  formatTargetAudienceEvaluation,
+  formatMessagingValuesEvaluation,
+  formatOverallEvaluation,
+  formatToneSpectrumAdjustment // Add new formatters here
+} from '@/lib/prompts';
+import { AnthropicClient, OpenAIClient, type ApiClient } from '@/lib/api-clients';
 
-type EvaluationType = keyof typeof mockEvaluations;
+type BaseEvaluationType = 'voicePersonality' | 'targetAudience' | 'messagingValues' | 'overall';
+type SpecializedEvaluationType = 'toneAdjustment'; // Add new specialized types here
+type EvaluationType = BaseEvaluationType | SpecializedEvaluationType;
 
-interface EvaluationConfig {
+interface BaseEvaluationConfig {
+  formatter: (text: string) => string;
   name: string;
+  type: 'base';
 }
 
+interface SpecializedEvaluationConfig {
+  formatter: (text: string, options: any) => string;
+  name: string;
+  type: 'specialized';
+}
+
+type EvaluationConfig = BaseEvaluationConfig | SpecializedEvaluationConfig;
+
 const evaluationConfigs: Record<EvaluationType, EvaluationConfig> = {
+  // Base evaluations
   voicePersonality: {
-    name: 'Voice Personality'
+    formatter: formatVoicePersonalityEvaluation,
+    name: 'Voice Personality',
+    type: 'base'
   },
   targetAudience: {
-    name: 'Target Audience'
+    formatter: formatTargetAudienceEvaluation,
+    name: 'Target Audience',
+    type: 'base'
   },
   messagingValues: {
-    name: 'Messaging Values'
+    formatter: formatMessagingValuesEvaluation,
+    name: 'Messaging Values',
+    type: 'base'
   },
   overall: {
-    name: 'Overall'
+    formatter: formatOverallEvaluation,
+    name: 'Overall',
+    type: 'base'
+  },
+  // Specialized evaluations
+  toneAdjustment: {
+    formatter: formatToneSpectrumAdjustment,
+    name: 'Tone Adjustment',
+    type: 'specialized'
   }
+  // Add new specialized evaluations here
 };
 
-async function performMockEvaluation(
+async function performEvaluation(
+  client: ApiClient,
   text: string, 
-  type: EvaluationType
+  type: EvaluationType,
+  options?: any
 ): Promise<string> {
   const config = evaluationConfigs[type];
-  console.log(`Mock ${config.name} evaluation...`);
+  console.log(`Requesting ${config.name} evaluation...`);
   
-  // Simulate some processing time (optional, remove if not needed)
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
-  return mockEvaluations[type];
+  try {
+    let result;
+    if (config.type === 'specialized') {
+      result = await client.generateResponse(config.formatter(text, options));
+    } else {
+      result = await client.generateResponse(config.formatter(text));
+    }
+    console.log(`${config.name} evaluation successful`);
+    return result;
+  } catch (err: any) {
+    console.error(`${config.name} Error:`, {
+      message: err.message,
+      name: err.name,
+      status: err.status,
+      type: err.type
+    });
+    throw err;
+  }
 }
 
 export async function POST(request: Request) {
   try {
-    const { text } = await request.json();
+    const { 
+      text, 
+      api = 'anthropic',
+      evaluationType,
+      options 
+    } = await request.json();
+
     console.log('Received text length:', text?.length);
 
     if (!text) {
       return NextResponse.json({ error: 'No text provided' }, { status: 400 });
     }
 
+    let client: ApiClient;
+    if (api === 'anthropic') {
+      const apiKey = process.env.ANTHROPIC_API_KEY;
+      if (!apiKey) throw new Error('Anthropic API key not configured');
+      client = new AnthropicClient(apiKey);
+    } else {
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (!apiKey) throw new Error('OpenAI API key not configured');
+      client = new OpenAIClient(apiKey);
+    }
+
     try {
-      console.log('Starting mock evaluation process...');
+      console.log('Starting evaluation process...');
+      
+      // Handle specialized evaluation request
+      if (evaluationType) {
+        const config = evaluationConfigs[evaluationType as EvaluationType];
+        if (!config) {
+          throw new Error(`Unknown evaluation type: ${evaluationType}`);
+        }
+        
+        const result = await performEvaluation(client, text, evaluationType as EvaluationType, options);
+        return NextResponse.json({ result });
+      }
+      
+      // Handle base evaluations (maintains existing functionality)
+      const baseEvaluations = Object.entries(evaluationConfigs)
+        .filter(([_, config]) => config.type === 'base');
       
       const evaluationResults = await Promise.all(
-        (Object.keys(mockEvaluations) as EvaluationType[]).map(async (type) => {
-          const result = await performMockEvaluation(text, type);
+        baseEvaluations.map(async ([type]) => {
+          const result = await performEvaluation(client, text, type as BaseEvaluationType);
           return [type, result];
         })
       );
@@ -59,22 +142,25 @@ export async function POST(request: Request) {
         Object.fromEntries(evaluationResults)
       );
 
-    } catch (error: any) {
-      console.error('Mock Evaluation Error:', error);
+    } catch (apiError: any) {
+      console.error('API Error Details:', apiError);
       return NextResponse.json(
         { 
           error: 'Failed to process text',
-          details: error.message
+          details: `API Error (${apiError.type}): ${apiError.message}`,
+          errorType: apiError.type,
+          errorStatus: apiError.status
         },
-        { status: 500 }
+        { status: apiError.status || 500 }
       );
     }
   } catch (error: any) {
-    console.error('Server Error:', error);
+    console.error('Server Error Details:', error);
     return NextResponse.json(
       { 
         error: 'Server error occurred',
-        details: error.message
+        details: error.message,
+        errorType: error.name
       },
       { status: 500 }
     );

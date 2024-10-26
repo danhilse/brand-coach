@@ -21,13 +21,26 @@ import { ToneSpectrumSection } from '@/components/ToneSpectrumSection';
 import { TargetAudienceMatrix } from '@/components/TargetAudienceMatrix';
 import { MessagingValuesSection } from '@/components/MessagingValuesSection';
 import { OverallEvaluationSection } from '@/components/OverallEvaluation';
-import { ApiToggle } from '@/components/ApiToggle';
+
+import { formatToneSpectrumAdjustment } from '@/lib/prompts';
+
 
 interface Evaluation {
   voicePersonality: VoicePersonalityEvaluation;
   targetAudience: TargetAudienceEvaluation;
   messagingValues: MessagingValuesEvaluation;
   overall: OverallEvaluation;
+}
+
+interface SpectrumSection {
+  label: {
+    top: string;
+    bottom: string;
+  };
+  content: string[];
+  color?: string;
+  isMiddle?: boolean;
+  threshold: number;
 }
 
 export default function Home() {
@@ -75,6 +88,42 @@ export default function Home() {
     }
   }
 
+  const handleSpectrumSectionClick = async (section: SpectrumSection) => {
+    try {
+      // Extract percentages from the section labels
+      const challengingPercentage = parseInt(section.label.top.split('%')[0]);
+      const supportivePercentage = parseInt(section.label.bottom.split('%')[0]);
+      
+      // Format content types
+      const contentTypes = section.content.map(c => c.replace('-', '').trim());
+  
+      // Use the prompt function with the correct parameters
+      const prompt = formatToneSpectrumAdjustment(input, {
+        challengingPercentage,
+        supportivePercentage
+      });
+  
+      const res = await fetch('/api/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          text: prompt,
+          api: activeApi 
+        }),
+      });
+  
+      if (!res.ok) {
+        throw new Error('Failed to analyze tone section');
+      }
+  
+      const data = await res.json();
+      return data.overall;
+    } catch (error) {
+      console.error('Tone Analysis Error:', error);
+      throw new Error('Failed to analyze tone section');
+    }
+  };
+
   return (
     <main className="container-acton py-8">
       <div>
@@ -87,14 +136,6 @@ export default function Home() {
             priority 
           />
         </div>
-        {/* <h1 className="mb-6">Brand Coach</h1> */}
-        
-        {/* <ApiToggle 
-          activeApi={activeApi} 
-          onToggle={setActiveApi} 
-        /> */}
-
-        
 
         <form onSubmit={handleSubmit} className="space-y-4 mb-8">
           <DocumentInput 
@@ -127,13 +168,14 @@ export default function Home() {
               <BrandPersonalitySection 
                 personalityEvaluation={evaluation.voicePersonality.personalityEvaluation} 
               />
-              <ToneSpectrumSection 
-                toneEvaluation={evaluation.voicePersonality.toneEvaluation} 
-              />
+            <ToneSpectrumSection 
+              toneEvaluation={evaluation.voicePersonality.toneEvaluation}
+              originalContent={input} // Pass the original content
+              onSectionClick={handleSpectrumSectionClick}
+            />
               <VoiceAnalysisSection 
                 voiceEvaluation={evaluation.voicePersonality.voiceEvaluation} 
               />
-
             </section>
 
             <MessagingValuesSection evaluation={evaluation.messagingValues} />

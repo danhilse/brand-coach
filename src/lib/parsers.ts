@@ -23,10 +23,22 @@ const createEvaluation = (section: string) => ({
   score: extractScore(section)
 });
 
+// Add a store for the tone score
+let lastToneScore: number | null = null;
+
+// Add getter/setter
+export function getLastToneScore(): number | null {
+  return lastToneScore;
+}
+
 export function parseVoicePersonalityEvaluation(response: string): VoicePersonalityEvaluation {
   const personalitySection = extractContent(response, 'personality_evaluation');
   const voiceSection = extractContent(response, 'voice_evaluation');
   const toneSection = extractContent(response, 'challenging_supportive_evaluation');
+
+  // Extract and store the tone score
+  const toneEval = createEvaluation(toneSection);
+  lastToneScore = toneEval.score;
 
   return {
     personalityEvaluation: {
@@ -51,7 +63,7 @@ export function parseVoicePersonalityEvaluation(response: string): VoicePersonal
         extractContent(voiceSection, 'channel_tailored')
       )
     },
-    toneEvaluation: createEvaluation(toneSection)
+    toneEvaluation: toneEval
   };
 }
 

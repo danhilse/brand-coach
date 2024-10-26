@@ -1,12 +1,31 @@
-// components/ToneSpectrumSection.tsx
+import React, { useState } from 'react';
 import { Card } from './Card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ToneEvaluation {
-  analysis: string;
-  score: number;
-}
+    analysis: string;
+    score: number;
+  }
+  
+  interface SpectrumSection {
+    label: { 
+      top: string;
+      bottom: string;
+    };
+    content: string[];
+    color?: string;
+    isMiddle?: boolean;
+    threshold: number;
+  }
+  
+  interface AdditionalAnalysis {
+    section: string;
+    analysis: string;
+  }
 
-const spectrumData = [
+
+
+const spectrumData: SpectrumSection[] = [
   {
     label: { top: "10% CHALLENGING", bottom: "90% SUPPORTIVE" },
     content: ["-VIDEO", "-SOCIAL", "-ADVERTISING"],
@@ -39,16 +58,68 @@ const spectrumData = [
   }
 ];
 
-export const ToneSpectrumSection = ({ toneEvaluation }: { toneEvaluation: ToneEvaluation }) => {
-  const getCurrentCategory = (score: number) => {
-    return spectrumData.find((data, index) => {
-      const lowerBound = index === 0 ? 0 : spectrumData[index - 1].threshold;
-      const upperBound = data.threshold;
-      return score > lowerBound && score <= upperBound;
-    });
-  };
 
-  const currentCategory = getCurrentCategory(toneEvaluation.score);
+// Update the component props to include originalContent
+export const ToneSpectrumSection = ({ 
+    toneEvaluation,
+    originalContent, 
+    onSectionClick 
+  }: { 
+    toneEvaluation: ToneEvaluation;
+    originalContent: string;
+    onSectionClick: (section: SpectrumSection) => Promise<string>;
+  }) => {
+    const [loading, setLoading] = useState<string | null>(null);
+    const [additionalAnalyses, setAdditionalAnalyses] = useState<AdditionalAnalysis[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  
+    const getCurrentCategory = (score: number) => {
+      return spectrumData.find((data, index) => {
+        const lowerBound = index === 0 ? 0 : spectrumData[index - 1].threshold;
+        const upperBound = data.threshold;
+        return score > lowerBound && score <= upperBound;
+      });
+    };
+  
+    const currentCategory = getCurrentCategory(toneEvaluation.score);
+  
+    const handleSectionClick = async (section: SpectrumSection) => {
+        try {
+          setLoading(section.label.top);
+          setError(null);
+      
+          const challengingPercentage = parseInt(section.label.top.split('%')[0]);
+          const supportivePercentage = parseInt(section.label.bottom.split('%')[0]);
+          
+          const response = await fetch('/api/evaluate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              text: originalContent,
+              evaluationType: 'toneAdjustment',
+              options: {
+                challengingPercentage,
+                supportivePercentage,
+                contentTypes: section.content.map(c => c.replace('-', '').trim())
+              },
+              api: 'anthropic'
+            })
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to analyze tone');
+          }
+      
+          const data = await response.json();
+          return data.result;
+        } catch (err) {
+          console.error('Analysis error:', err);
+          throw err;
+        }
+      };
 
   return (
     <Card>
@@ -61,8 +132,10 @@ export const ToneSpectrumSection = ({ toneEvaluation }: { toneEvaluation: ToneEv
         <div className="grid grid-cols-5 text-center text-[12px] leading-[18px] text-[var(--text-light)]">
           {spectrumData.map((section, i) => (
             <div 
-              key={i} 
-              className={`space-y-1 ${section === currentCategory ? 'text-[var(--primary-base)] font-semibold' : ''}`}
+              key={i}
+              className={`space-y-1
+                ${section === currentCategory ? 'text-[var(--primary-base)] font-semibold' : ''}`}
+              onClick={() => handleSectionClick(section)}
             >
               <div>{section.label.top}</div>
               <div>{section.label.bottom}</div>
@@ -76,14 +149,32 @@ export const ToneSpectrumSection = ({ toneEvaluation }: { toneEvaluation: ToneEv
           <div className="absolute right-0 -top-6 text-[var(--text-light)]">CHALLENGING</div>
           <div className="flex h-8 relative">
             {spectrumData.map((section, i) => (
-              <div key={i} className="flex-1">
+              <div 
+                key={i}
+                className="flex-1 relative"
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                onClick={() => handleSectionClick(section)}
+              >
                 {section.isMiddle ? (
-                  <div className="relative h-full">
+                  <div className="relative h-full cursor-pointer hover:opacity-70 transition-opacity">
                     <div className="absolute inset-x-0 top-0 h-1/2 bg-[#f1a4ab]" />
                     <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[#8bd7d2]" />
                   </div>
                 ) : (
-                    <div key={i} className={`relative h-full flex-1 ${section.color}`} />
+                  <div className={`relative h-full flex-1 cursor-pointer hover:opacity-70 transition-opacity ${section.color}`} />
+                )}
+                
+                {/* Tooltip */}
+                {hoveredIndex === i && (
+                  <div className="absolute z-50 left-1/2 transform -translate-x-1/2 top-full mt-2">
+                    <div className="bg-black text-white px-3 py-2 rounded-md text-sm whitespace-nowrap">
+                      <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black rotate-45" />
+                      {section.content.map(c => c.replace('-', '')).join(', ')}
+                      <br />
+                      {section.label.top} / {section.label.bottom}
+                    </div>
+                  </div>
                 )}
               </div>
             ))}
@@ -99,8 +190,10 @@ export const ToneSpectrumSection = ({ toneEvaluation }: { toneEvaluation: ToneEv
         <div className="grid grid-cols-5 text-[12px] leading-[18px] text-[var(--text)]">
           {spectrumData.map((section, i) => (
             <div 
-              key={i} 
-              className={`space-y-1 pl-4 ${section === currentCategory ? 'text-[var(--primary-base)] font-semibold' : ''}`}
+              key={i}
+              className={`space-y-1 pl-4
+                ${section === currentCategory ? 'text-[var(--primary-base)] font-semibold' : ''}`}
+              onClick={() => handleSectionClick(section)}
             >
               {section.content.map((item, j) => (
                 <div key={j}>{item}</div>
@@ -110,12 +203,41 @@ export const ToneSpectrumSection = ({ toneEvaluation }: { toneEvaluation: ToneEv
         </div>
 
         {/* Analysis Text */}
-        <div className="pt-2">
-          <p className="text-[14px] leading-[20px] text-[var(--text-light)]">
-            {toneEvaluation.analysis}
-          </p>
+        <div className="space-y-4">
+          <div className="pt-2">
+            <p className="text-[14px] leading-[20px] text-[var(--text-light)]">
+              {toneEvaluation.analysis}
+            </p>
+          </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div className="flex items-center space-x-2 text-[var(--text-light)]">
+              <div className="animate-spin h-4 w-4 border-2 border-[var(--primary-base)] border-t-transparent rounded-full" />
+              <span>Loading analysis for {loading}...</span>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {/* Additional Analyses */}
+          {additionalAnalyses.map((item, index) => (
+            <div key={index} className="p-4 bg-slate-50 rounded-lg">
+              <h4 className="font-semibold mb-2">{item.section} Analysis:</h4>
+              <p className="text-[14px] leading-[20px] text-[var(--text-light)]">
+                {item.analysis}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </Card>
   );
 };
+
+export default ToneSpectrumSection;
