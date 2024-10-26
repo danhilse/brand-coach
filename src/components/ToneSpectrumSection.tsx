@@ -1,29 +1,29 @@
+// components/ToneSpectrumSection.tsx
 import React, { useState } from 'react';
 import { Card } from './Card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { evaluationService } from '@/lib/services/evaluationService';
 
 interface ToneEvaluation {
-    analysis: string;
-    score: number;
-  }
-  
-  interface SpectrumSection {
-    label: { 
-      top: string;
-      bottom: string;
-    };
-    content: string[];
-    color?: string;
-    isMiddle?: boolean;
-    threshold: number;
-  }
-  
-  interface AdditionalAnalysis {
-    section: string;
-    analysis: string;
-  }
+  analysis: string;
+  score: number;
+}
 
+interface SpectrumSection {
+  label: { 
+    top: string;
+    bottom: string;
+  };
+  content: string[];
+  color?: string;
+  isMiddle?: boolean;
+  threshold: number;
+}
 
+interface AdditionalAnalysis {
+  section: string;
+  analysis: string;
+}
 
 const spectrumData: SpectrumSection[] = [
   {
@@ -62,62 +62,62 @@ const spectrumData: SpectrumSection[] = [
 // Update the component props to include originalContent
 export const ToneSpectrumSection = ({ 
     toneEvaluation,
-    originalContent, 
-    onSectionClick 
+    originalContent
   }: { 
     toneEvaluation: ToneEvaluation;
     originalContent: string;
-    onSectionClick: (section: SpectrumSection) => Promise<string>;
   }) => {
     const [loading, setLoading] = useState<string | null>(null);
     const [additionalAnalyses, setAdditionalAnalyses] = useState<AdditionalAnalysis[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   
-    const getCurrentCategory = (score: number) => {
-      return spectrumData.find((data, index) => {
+    // Keep this function for determining the current category based on score
+    const getCurrentCategory = (score: number): SpectrumSection | undefined => {
+        return spectrumData.find((data, index) => {
         const lowerBound = index === 0 ? 0 : spectrumData[index - 1].threshold;
         const upperBound = data.threshold;
         return score > lowerBound && score <= upperBound;
-      });
+        });
     };
-  
+
+    // Calculate current category
     const currentCategory = getCurrentCategory(toneEvaluation.score);
-  
+
     const handleSectionClick = async (section: SpectrumSection) => {
         try {
           setLoading(section.label.top);
           setError(null);
       
-          const challengingPercentage = parseInt(section.label.top.split('%')[0]);
-          const supportivePercentage = parseInt(section.label.bottom.split('%')[0]);
-          
-          const response = await fetch('/api/evaluate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-              text: originalContent,
-              evaluationType: 'toneAdjustment',
-              options: {
-                challengingPercentage,
-                supportivePercentage,
-                contentTypes: section.content.map(c => c.replace('-', '').trim())
-              },
-              api: 'anthropic'
-            })
-          });
+          const result = await evaluationService.evaluateToneAdjustment(
+            originalContent,
+            {
+              challengingPercentage: parseInt(section.label.top.split('%')[0]),
+              supportivePercentage: parseInt(section.label.bottom.split('%')[0]),
+            }
+          );
       
-          if (!response.ok) {
-            throw new Error('Failed to analyze tone');
+          if (result.error) {
+            throw new Error(result.error);
           }
       
-          const data = await response.json();
-          return data.result;
+          // Only update state if we have data
+          if (result.data && typeof result.data === 'string') {
+            setAdditionalAnalyses(prev => [
+              ...prev, 
+              {
+                section: section.label.top,
+                analysis: result.data as string // Now we know this is definitely a string
+              }
+            ]);
+          } else {
+            throw new Error('No analysis was returned');
+          }
         } catch (err) {
           console.error('Analysis error:', err);
-          throw err;
+          setError(err instanceof Error ? err.message : 'Failed to analyze tone');
+        } finally {
+          setLoading(null);
         }
       };
 

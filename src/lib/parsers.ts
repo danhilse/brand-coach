@@ -3,7 +3,8 @@ import type {
   VoicePersonalityEvaluation, 
   TargetAudienceEvaluation, 
   OverallEvaluation,
-  MessagingValuesEvaluation 
+  MessagingValuesEvaluation,
+  ToneAdjustmentEvaluation
 } from './types';
 
 const extractContent = (text: string, tag: string) => {
@@ -103,6 +104,66 @@ export function parseMessagingValuesEvaluation(response: string): MessagingValue
   };
 }
 
+// Add this to parsers.ts
+export function parseToneAdjustmentEvaluation(response: string): ToneAdjustmentEvaluation {
+  const currentStateSection = extractContent(response, 'current_state_analysis');
+  const specificAdjustmentsSection = extractContent(response, 'specific_adjustments');
+  const bestPracticesSection = extractContent(response, 'best_practices');
+  const implementationSection = extractContent(response, 'implementation_priority');
+
+  // Parse phrasing changes
+  const phrasingChanges = (specificAdjustmentsSection.match(/<phrasing_changes>[\s\S]*?<\/phrasing_changes>/g) || [])
+    .map(section => ({
+      original: extractContent(section, 'original'),
+      suggested: extractContent(section, 'suggested'),
+      rationale: extractContent(section, 'rationale')
+    }));
+
+  // Parse structural changes
+  const structuralChanges = (specificAdjustmentsSection.match(/<structural_changes>[\s\S]*?<\/structural_changes>/g) || [])
+    .map(section => ({
+      section: extractContent(section, 'section'),
+      recommendation: extractContent(section, 'recommendation'),
+      example: extractContent(section, 'example')
+    }));
+
+  // Parse content type adjustments
+  const contentTypeAdjustments = (specificAdjustmentsSection.match(/<content_type_adjustments>[\s\S]*?<\/content_type_adjustments>/g) || [])
+    .map(section => ({
+      adjustment: extractContent(section, 'adjustment'),
+      example: extractContent(section, 'example'),
+      rationale: extractContent(section, 'rationale')
+    }));
+
+  // Extract best practices
+  const extractList = (text: string): string[] => {
+    return text
+      .split('\n')
+      .map(line => line.replace(/^-\s*|\d+\.\s*/, '').trim())
+      .filter(line => line.length > 0);
+  };
+
+  return {
+    currentStateAnalysis: {
+      toneBalance: extractContent(currentStateSection, 'tone_balance'),
+      brandAlignment: extractContent(currentStateSection, 'brand_alignment')
+    },
+    specificAdjustments: {
+      phrasingChanges,
+      structuralChanges,
+      contentTypeAdjustments
+    },
+    bestPractices: {
+      do: extractList(extractContent(bestPracticesSection, 'do')),
+      dont: extractList(extractContent(bestPracticesSection, 'dont'))
+    },
+    implementationPriority: {
+      highImpact: extractList(extractContent(implementationSection, 'high_impact')),
+      secondary: extractList(extractContent(implementationSection, 'secondary'))
+    }
+  };
+}
+
 export function parseTargetAudienceEvaluation(response: string): TargetAudienceEvaluation {
   const targetSection = extractContent(response, 'target_audience_evaluation');
 
@@ -137,3 +198,4 @@ export function parseOverallEvaluation(response: string): OverallEvaluation {
     suggestions: extractList(extractContent(overallSection, 'suggestions'))
   };
 }
+
