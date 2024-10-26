@@ -16,7 +16,68 @@ export function formatToneSpectrumAdjustment(
     currentScore = 0;
   }
   
-  return `Respond "I understand"`;
+  return `You are a tone analysis expert for Act-On's brand voice, tasked with analyzing content and providing specific recommendations for adjusting its tone balance. Please read the following brand guidelines carefully, as they will inform your analysis:
+
+<brand_guidelines>
+${personality}
+</brand_guidelines>
+
+<content_to_analyze>
+${originalContent}
+</content_to_analyze>
+
+<tone_analysis>
+Current Challenging/Supportive Balance: ${currentScore}% challenging, ${100 - currentScore}% supportive
+Target Balance: ${targetTone.challengingPercentage}% challenging, ${targetTone.supportivePercentage}% supportive
+Required Shift: ${targetTone.challengingPercentage - currentScore}% more challenging
+</tone_analysis>
+
+
+Please analyze the content and provide specific recommendations by considering:
+
+1. Current Tone Analysis:
+- Identify the current challenging vs supportive balance
+- Evaluate how the content aligns with Act-On's brand personality
+- Assess appropriateness for the target content types
+
+2. Required Adjustments:
+- Analyze the gap between current and target tone
+- Identify specific phrases and sections that need modification
+- Consider content type-specific requirements
+
+Provide your analysis in the following structure:
+
+<tone_adjustment_evaluation>
+  <current_state_analysis>
+    <tone_balance>
+      [Analyze the current ratio of ${currentScore}% challenging and ${100 - currentScore}% supportive content, with specific examples of each. Express findings as percentages.]
+    </tone_balance>
+  </current_state_analysis>
+
+  <specific_adjustments>
+    <phrasing_changes>
+      <original>[Quote specific phrase from original content]</original>
+      <suggested>[Provide revised version with explanation of why this better achieves target balance of ${targetTone.challengingPercentage}% challenging, ${targetTone.supportivePercentage}% supportive]</suggested>
+      <rationale>[Explain how this change helps achieve the target tone balance of ${targetTone.challengingPercentage}% challenging, ${targetTone.supportivePercentage}% supportive]</rationale>
+    </phrasing_changes>
+    <phrasing_changes>
+      [Additional phrase adjustments following the same pattern...]
+    </phrasing_changes>
+    
+  </specific_adjustments>
+
+
+</tone_adjustment_evaluation>
+
+Before providing your evaluation, please:
+1. Review the brand guidelines carefully to ensure recommendations align with Act-On's voice
+2. Consider the specific requirements of the target content types
+3. Focus on concrete, actionable changes with specific examples from the original content
+
+Your recommendations should be extremely specific and immediately actionable. Each suggestion should include:
+- The exact text to change
+- The specific replacement text
+- A clear explanation of how this change helps achieve the target tone balance"`;
 }
 
 
@@ -366,3 +427,21 @@ After your analysis, provide your evaluation in the following format:
 Ensure that your evaluation is thorough, specific, and directly tied to Act-On's brand guidelines. Provide concrete examples from the input text to support your assessment and suggestions.`;
 }
 
+
+// <best_practices>
+// <do>
+//   [List of specific practices to follow to achieve the target balance, with examples]
+// </do>
+// <dont>
+//   [List of practices to avoid, with examples of why they would push the balance in the wrong direction]
+// </dont>
+// </best_practices>
+
+// <implementation_priority>
+// <high_impact>
+//   [List the most crucial changes that will have the biggest impact on achieving the target tone balance]
+// </high_impact>
+// <secondary>
+//   [Additional changes that would help fine-tune the tone after primary changes are made]
+// </secondary>
+// </implementation_priority>

@@ -1,81 +1,127 @@
-// lib/api-clients.ts
 import { Anthropic } from '@anthropic-ai/sdk';
 import OpenAI from 'openai';
-import { mockEvaluations } from './mockEvaluations';
 import type { ApiProvider } from './types';
 
-export interface ApiClient {
-  generateResponse: (prompt: string) => Promise<string>;
-}
+// Create singleton instances of clients
+const anthropicClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+const openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
-class AnthropicClient implements ApiClient {
-  private client: Anthropic;
+// Add rate limiting utility
+class RateLimit {
+  private queue: Array<() => Promise<void>> = [];
+  private processing = false;
+  private lastRequestTime = 0;
+  private minRequestGap: number;
 
-  constructor(apiKey: string) {
-    this.client = new Anthropic({ apiKey });
+  constructor(requestsPerSecond: number) {
+    this.minRequestGap = 1000 / requestsPerSecond;
   }
 
-  async generateResponse(prompt: string): Promise<string> {
-    const response = await this.client.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 2048,
-      temperature: 0.3,
-      messages: [{ role: 'user', content: prompt }],
+  async add<T>(fn: () => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this.queue.push(async () => {
+        try {
+          const result = await fn();
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        }
+      });
+      
+      if (!this.processing) {
+        this.processQueue();
+      }
     });
+  }
 
-    if (response?.content?.[0]?.type === 'text') {
-      return response.content[0].text;
+  private async processQueue() {
+    if (this.processing || this.queue.length === 0) return;
+    
+    this.processing = true;
+    
+    while (this.queue.length > 0) {
+      const now = Date.now();
+      const timeToWait = Math.max(0, this.lastRequestTime + this.minRequestGap - now);
+      
+      if (timeToWait > 0) {
+        await new Promise(resolve => setTimeout(resolve, timeToWait));
+      }
+      
+      const fn = this.queue.shift();
+      if (fn) {
+        this.lastRequestTime = Date.now();
+        await fn();
+      }
     }
-    throw new Error('Unexpected response format from Anthropic API');
+    
+    this.processing = false;
   }
 }
 
-class OpenAIClient implements ApiClient {
-  private client: OpenAI;
+// Create rate limiters - adjust these values based on your API limits
+const anthropicRateLimit = new RateLimit(3); // 3 requests per second
+const openaiRateLimit = new RateLimit(3);
 
-  constructor(apiKey: string) {
-    this.client = new OpenAI({ apiKey });
+async function callAnthropic(prompt: string) {
+    const startTime = Date.now();
+    console.log(`${new Date().toISOString()} - Starting Anthropic API call`);
+    
+    try {
+      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+      console.log('Client created, sending request...');
+      
+      const response = await client.messages.create({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 2048,
+        temperature: 0.3,
+        messages: [{ role: 'user', content: prompt }]
+      });
+      
+      const duration = Date.now() - startTime;
+      console.log(`Anthropic API call completed in ${duration}ms`);
+      
+      const content = response.content.find(block => block.type === 'text');
+      if (!content || !('text' in content)) {
+        throw new Error('Unexpected response format from Anthropic API');
+      }
+      return content.text;
+    } catch (error) {
+      console.error('Anthropic API call failed:', error);
+      throw error;
+    }
   }
 
-  async generateResponse(prompt: string): Promise<string> {
-    const response = await this.client.chat.completions.create({
+async function callOpenAI(prompt: string) {
+  return openaiRateLimit.add(async () => {
+    console.log('Making OpenAI API call at:', new Date().toISOString());
+    const response = await openaiClient.chat.completions.create({
       model: 'gpt-4-turbo-preview',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
       max_tokens: 2048
     });
 
-    const content = response.choices[0]?.message?.content;
-    if (content) {
-      return content;
+    if (!response.choices[0]?.message?.content) {
+      throw new Error('Unexpected response format from OpenAI API');
     }
-    throw new Error('Unexpected response format from OpenAI API');
-  }
+    return response.choices[0].message.content;
+  });
 }
 
-class TestClient implements ApiClient {
-  async generateResponse(prompt: string): Promise<string> {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return mockEvaluations.overall;
-  }
+async function callTestApi(prompt: string) {
+  return 'test response';
 }
 
-export const getApiClient = (provider: ApiProvider): ApiClient => {
-  switch (provider) {
-    case 'anthropic':
-      const anthropicKey = process.env.ANTHROPIC_API_KEY;
-      if (!anthropicKey) throw new Error('Anthropic API key not configured');
-      return new AnthropicClient(anthropicKey);
-    
-    case 'openai':
-      const openaiKey = process.env.OPENAI_API_KEY;
-      if (!openaiKey) throw new Error('OpenAI API key not configured');
-      return new OpenAIClient(openaiKey);
-    
-    case 'test':
-      return new TestClient();
-    
-    default:
-      throw new Error(`Unknown API provider: ${provider}`);
-  }
-};
+const apiClients = {
+  anthropic: callAnthropic,
+  openai: callOpenAI,
+  test: callTestApi
+} as const;
+
+export async function generateResponse(
+  prompt: string, 
+  provider: ApiProvider = 'anthropic'
+): Promise<string> {
+  const apiCall = apiClients[provider];
+  return await apiCall(prompt);
+}

@@ -1,3 +1,15 @@
+// types.ts
+// export type ApiProvider = 'anthropic' | 'openai' | 'test';
+
+// export interface ApiResponse<T> {
+//   data?: T;
+//   error?: string;
+// }
+
+export interface ParsedResponse {
+  [key: string]: any;
+}
+
 // lib/types.ts
 export interface VoicePersonalityEvaluation {
     personalityEvaluation: {
@@ -99,7 +111,7 @@ export interface VoicePersonalityEvaluation {
 export interface ToneAdjustmentEvaluation {
     currentStateAnalysis: {
       toneBalance: string;
-      brandAlignment: string;
+    //   brandAlignment: string;
     };
     specificAdjustments: {
       phrasingChanges: Array<{
@@ -107,25 +119,15 @@ export interface ToneAdjustmentEvaluation {
         suggested: string;
         rationale: string;
       }>;
-      structuralChanges: Array<{
-        section: string;
-        recommendation: string;
-        example: string;
-      }>;
-      contentTypeAdjustments: Array<{
-        adjustment: string;
-        example: string;
-        rationale: string;
-      }>;
     };
-    bestPractices: {
-      do: string[];
-      dont: string[];
-    };
-    implementationPriority: {
-      highImpact: string[];
-      secondary: string[];
-    };
+    // bestPractices: {
+    //   do: string[];
+    //   dont: string[];
+    // };
+    // implementationPriority: {
+    //   highImpact: string[];
+    //   secondary: string[];
+    // };
   }
 
 export interface CompleteEvaluation {

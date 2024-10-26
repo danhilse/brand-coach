@@ -4,14 +4,16 @@ import { useState } from 'react';
 import Image from 'next/image';
 import type { ApiProvider } from '@/lib/types';
 
+// Import only what we need from evaluations
+import { evaluateAll } from '@/lib/services/evaluationService';
 
-import { evaluationService } from '@/lib/services/evaluationService';
 import type { 
   VoicePersonalityEvaluation, 
   TargetAudienceEvaluation,
   MessagingValuesEvaluation,
   OverallEvaluation 
 } from '@/lib/types';
+
 import { DocumentInput } from '@/components/DocumentInput';
 import { BrandPersonalitySection } from '@/components/BrandPersonalitySection';
 import { VoiceAnalysisSection } from '@/components/VoiceAnalysisSection';
@@ -19,26 +21,13 @@ import { ToneSpectrumSection } from '@/components/ToneSpectrumSection';
 import { TargetAudienceMatrix } from '@/components/TargetAudienceMatrix';
 import { MessagingValuesSection } from '@/components/MessagingValuesSection';
 import { OverallEvaluationSection } from '@/components/OverallEvaluation';
-
-import { ModelSelector } from '@/components/ModelSelector';
-
+// import { ModelSelector } from '@/components/ModelSelector';
 
 interface Evaluation {
   voicePersonality?: VoicePersonalityEvaluation;
   targetAudience?: TargetAudienceEvaluation;
   messagingValues?: MessagingValuesEvaluation;
   overall?: OverallEvaluation;
-}
-
-interface SpectrumSection {
-  label: {
-    top: string;
-    bottom: string;
-  };
-  content: string[];
-  color?: string;
-  isMiddle?: boolean;
-  threshold: number;
 }
 
 export default function Home() {
@@ -48,7 +37,6 @@ export default function Home() {
   const [error, setError] = useState('');
   const [activeApi, setActiveApi] = useState<ApiProvider>('anthropic');
 
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim()) return;
@@ -57,36 +45,16 @@ export default function Home() {
     setError('');
     setEvaluation({});
 
-    const result = await evaluationService.evaluateAll(input);
-    
-    if (result.errors) {
-      setError(result.errors.join('; '));
+    try {
+      const result = await evaluateAll(input);
+      setEvaluation(result);
+    } catch (err: any) {
+      setError(err.message || 'An error occurred during evaluation');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setEvaluation(result);
-    setIsLoading(false);
   }
 
-  const handleSpectrumSectionClick = async (section: SpectrumSection) => {
-    try {
-      const challengingPercentage = parseInt(section.label.top.split('%')[0]);
-      const supportivePercentage = parseInt(section.label.bottom.split('%')[0]);
-      
-      const result = await evaluationService.evaluateToneAdjustment(input, {
-        challengingPercentage,
-        supportivePercentage
-      });
-  
-      if (result.error) {
-        throw new Error(result.error);
-      }
-  
-      return result.data || ''; // Ensure we always return a string
-    } catch (error) {
-      console.error('Tone Analysis Error:', error);
-      return ''; // Return empty string on error
-    }
-  };
   return (
     <main className="container-acton py-8">
       <div>
@@ -98,7 +66,6 @@ export default function Home() {
             height={0} 
             priority 
           />
-
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 mb-8">
@@ -135,7 +102,7 @@ export default function Home() {
                 />
                 <ToneSpectrumSection 
                   toneEvaluation={evaluation.voicePersonality.toneEvaluation}
-                  originalContent={input}
+                  content={input}
                 />
                 <VoiceAnalysisSection 
                   voiceEvaluation={evaluation.voicePersonality.voiceEvaluation} 

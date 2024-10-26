@@ -119,14 +119,6 @@ export function parseToneAdjustmentEvaluation(response: string): ToneAdjustmentE
       rationale: extractContent(section, 'rationale')
     }));
 
-  // Parse structural changes
-  const structuralChanges = (specificAdjustmentsSection.match(/<structural_changes>[\s\S]*?<\/structural_changes>/g) || [])
-    .map(section => ({
-      section: extractContent(section, 'section'),
-      recommendation: extractContent(section, 'recommendation'),
-      example: extractContent(section, 'example')
-    }));
-
   // Parse content type adjustments
   const contentTypeAdjustments = (specificAdjustmentsSection.match(/<content_type_adjustments>[\s\S]*?<\/content_type_adjustments>/g) || [])
     .map(section => ({
@@ -146,21 +138,19 @@ export function parseToneAdjustmentEvaluation(response: string): ToneAdjustmentE
   return {
     currentStateAnalysis: {
       toneBalance: extractContent(currentStateSection, 'tone_balance'),
-      brandAlignment: extractContent(currentStateSection, 'brand_alignment')
+      // brandAlignment: extractContent(currentStateSection, 'brand_alignment')
     },
     specificAdjustments: {
-      phrasingChanges,
-      structuralChanges,
-      contentTypeAdjustments
+      phrasingChanges
     },
-    bestPractices: {
-      do: extractList(extractContent(bestPracticesSection, 'do')),
-      dont: extractList(extractContent(bestPracticesSection, 'dont'))
-    },
-    implementationPriority: {
-      highImpact: extractList(extractContent(implementationSection, 'high_impact')),
-      secondary: extractList(extractContent(implementationSection, 'secondary'))
-    }
+    // bestPractices: {
+    //   do: extractList(extractContent(bestPracticesSection, 'do')),
+    //   dont: extractList(extractContent(bestPracticesSection, 'dont'))
+    // },
+    // implementationPriority: {
+    //   highImpact: extractList(extractContent(implementationSection, 'high_impact')),
+    //   secondary: extractList(extractContent(implementationSection, 'secondary'))
+    // }
   };
 }
 
