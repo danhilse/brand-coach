@@ -22,6 +22,8 @@ async function makeAPICall(content: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ content })
   });
+
+  console.log(response)
   
   const result = await response.json();
   if (result.error) throw new Error(result.error);
