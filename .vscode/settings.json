@@ -7,6 +7,10 @@
         {
             "filePath": "src/app/page.tsx",
             "group": "Default"
+        },
+        {
+            "filePath": "src/lib/test/testData.json",
+            "group": "Default"
         }
     ]
 }

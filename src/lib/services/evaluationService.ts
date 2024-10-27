@@ -294,70 +294,134 @@ Ensure each analysis includes:
   return JSON.parse(response);
 }
 
-export async function evaluateOverall(content: string): Promise<OverallEvaluation> {
-    const prompt = `You are a brand alignment expert for Act-On, a marketing automation company. Your task is to provide a comprehensive evaluation of a given text against Act-On's brand guidelines and return it in a specific JSON format. 
-  
-  First, carefully review the following brand guidelines:
-  <brand_guidelines>
-  ${brandGuidelines}
-  </brand_guidelines>
-  
-  Now, analyze the following text for overall brand alignment:
-  <input_text>
-  ${content}
-  </input_text>
-  
-  Conduct a step-by-step analysis of the input text against the brand guidelines, considering:
-  
-  1. Dual Personality:
-     - How well the text represents Act-On's "Supportive Challenger" and "White-Collar Mechanic" personas
-     - Specific examples from the text that align with or deviate from these personalities
-  
-  2. Messaging Framework:
-     - Text's alignment with "Act-On Fuels Agile Marketing," "Innovative Solutions for Innovative Marketers," and "Your Partner in Marketing Success at Every Stage"
-     - Instances where these messages are effectively conveyed or missed opportunities
-  
-  3. Brand Voice:
-     - How well the text embodies: refreshingly direct, natural, authentic, gender-neutral, and inclusive
-     - Examples of language that exemplify these traits or areas where improvement is needed
-  
-  4. Tone:
-     - If the tone is appropriate based on the Tone of Voice Spectrum
-     - Why the tone is suitable or needs adjustment for the content type
-  
-  5. ICP Relevance:
-     - How well the text speaks to Act-On's Ideal Customer Profiles (ICPs)
-     - Elements that resonate with the target audience or areas where messaging could be more tailored
-  
-  After your analysis, return your evaluation in the following JSON format. Do not include any other text or explanation outside of this JSON structure:
-  
-  {
-    "overallScore": {
-      "analysis": "Comprehensive analysis of brand alignment, citing specific examples and referencing guidelines",
-      "score": 0-100
-    },
-    "strengths": [
-      "Specific strength with example from the input text",
-      "Specific strength with example from the input text",
-      "Specific strength with example from the input text"
-    ],
-    "improvementAreas": [
-      "Specific area for improvement with example from the input text",
-      "Specific area for improvement with example from the input text",
-      "Specific area for improvement with example from the input text"
-    ],
-    "suggestions": [
-      "Actionable suggestion with example of implementation",
-      "Actionable suggestion with example of implementation",
-      "Actionable suggestion with example of implementation"
-    ]
-  }
-  
-  Ensure your evaluation is thorough, specific, and directly tied to Act-On's brand guidelines. Provide concrete examples from the input text to support your assessment and suggestions. Return only the JSON object with no additional text or formatting.`;
+export async function evaluateOverall(content: string, platform: string): Promise<OverallEvaluation> {
+    const prompt = `You are a brand alignment expert for Act-On, a marketing automation company. Your task is to evaluate how effectively content embodies Act-On's brand identity, providing analysis in a structured JSON format.
+
+First, thoroughly review these brand guidelines:
+<brand_guidelines>
+${brandGuidelines}
+</brand_guidelines>
+
+Now, analyze this content for brand alignment:
+<input_text>
+${content}
+</input_text>
+
+This content is intended for ${platform}.
+
+Evaluate how well this content authentically represents Act-On's brand identity by:
+
+1. Assessing alignment with Act-On's fundamental brand elements:
+- Dual personality (Supportive Challenger and White-Collar Mechanic)
+- Core messaging pillars
+- Brand voice characteristics
+- Values and audience focus
+
+2. Considering context and purpose:
+- Channel/content type and its position on the tone spectrum
+- Intended audience and their needs
+- Content objectives and how they align with brand goals
+
+The goal is not to check boxes but to evaluate how naturally and effectively the content embodies Act-On's brand essence while achieving its communication objectives.
+
+Provide your evaluation in this JSON format (return only the JSON, no other text):
+
+{
+  "overallScore": {
+    "analysis": "Comprehensive analysis of how effectively the content embodies Act-On's brand identity, supported by specific examples",
+    "score": 0-100
+  },
+  "strengths": [
+    "strength": {
+      "description": "Key strength demonstrating effective brand alignment",
+      "example": "Supporting example from the content"
+      }
+    // Include additional strengths as needed for meaningful analysis
+  ],
+  "improvementAreas": [
+    "improvement": {
+      "description": "Specific opportunity to better align with brand identity.",
+      "example": "Supporting example from the content"
+    // Include additional improvement areas as needed for meaningful analysis
+  ],
+  "suggestions": [
+    "suggestion": {
+      "description": "Actionable recommendation to strengthen brand alignment",
+      "example": "A specific implementation example"
+    // Include additional suggestions as needed for meaningful analysis
+  ]
+}
+
+Each section should include enough specific examples and recommendations to provide meaningful guidance for improvement while maintaining focus on authentic brand expression. Return only the JSON object with no additional text or formatting.`;
   
     const response = await makeAPICall(prompt);
     return JSON.parse(response);
   }
+
+export async function evaluateOverallNew(content: string, platform: string): Promise<OverallEvaluation> {
+    const prompt = `You are a brand alignment expert for Act-On, a marketing automation company. Your task is to evaluate how effectively content embodies Act-On's brand identity, providing analysis in a structured JSON format.
+
+First, thoroughly review these brand guidelines:
+<brand_guidelines>
+${brandGuidelines}
+</brand_guidelines>
+
+Now, analyze this content for brand alignment:
+<input_text>
+${content}
+</input_text>
+
+This content is intended for ${platform}.
+
+Evaluate how well this content authentically represents Act-On's brand identity by:
+
+1. Assessing alignment with Act-On's fundamental brand elements:
+- Dual personality (Supportive Challenger and White-Collar Mechanic)
+- Core messaging pillars
+- Brand voice characteristics
+- Values and audience focus
+
+2. Considering context and purpose:
+- Channel/content type and its position on the tone spectrum
+- Intended audience and their needs
+- Content objectives and how they align with brand goals
+
+The goal is not to check boxes but to evaluate how naturally and effectively the content embodies Act-On's brand essence while achieving its communication objectives.
+
+Provide your evaluation in this JSON format (return only the JSON, no other text):
+
+{
+  "overallScore": {
+    "analysis": "Comprehensive analysis of how effectively the content embodies Act-On's brand identity, supported by specific examples",
+    "score": 0-100
+  },
+  "strengths": [
+    "strength": {
+      "description": "Key strength demonstrating effective brand alignment",
+      "example": "Supporting example from the content"
+      }
+    // Include additional strengths as needed for meaningful analysis
+  ],
+  "improvementAreas": [
+    "improvement": {
+      "description": "Specific opportunity to better align with brand identity.",
+      "example": "Supporting example from the content"
+    // Include additional improvement areas as needed for meaningful analysis
+  ],
+  "suggestions": [
+    "suggestion": {
+      "description": "Actionable recommendation to strengthen brand alignment",
+      "example": "A specific implementation example"
+    // Include additional suggestions as needed for meaningful analysis
+  ]
+}
+
+Each section should include enough specific examples and recommendations to provide meaningful guidance for improvement while maintaining focus on authentic brand expression. Return only the JSON object with no additional text or formatting.`;
+  
+    const response = await makeAPICall(prompt);
+    return JSON.parse(response);
+  }
+
   
 export async function adjustToneSpectrum(
   content: string, 
@@ -441,7 +505,7 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export async function evaluateAll(content: string, platform: string, goals: string) {
 
   if (content.trim().toLowerCase() === 'test') {
-    await delay(3000); // 5 seconds
+    await delay(1400); // 5 seconds
     return testData;
   }
 
@@ -457,7 +521,7 @@ export async function evaluateAll(content: string, platform: string, goals: stri
       evaluateVoicePersonality(content),
       evaluateTargetAudience(content),
       evaluateMessagingValues(content),
-      evaluateOverall(content)
+      evaluateOverall(content, platform)
     ]);
 
     console.log(`All evaluations completed at ${new Date().toISOString()}`);

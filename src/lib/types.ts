@@ -84,15 +84,20 @@ export interface VoicePersonalityEvaluation {
     };
   }
   
-  export interface OverallEvaluation {
+  export type EvaluationItem = {
+    description: string;
+    example: string;
+  };
+  
+  export type OverallEvaluation = {
     overallScore: {
       analysis: string;
       score: number;
     };
-    strengths: string[];
-    improvementAreas: string[];
-    suggestions: string[];
-  }
+    strengths: EvaluationItem[];
+    improvementAreas: EvaluationItem[];
+    suggestions: EvaluationItem[];
+  };
 
   export interface MessagingValuesEvaluation {
     messagingAlignment: Array<{
