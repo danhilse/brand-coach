@@ -64,7 +64,7 @@ export default function Home() {
       <div>
         <div className="mb-6 flex pt-8">
           <Image 
-            src="/logo.png" 
+            src="/logo.svg" 
             alt="Logo" 
             width={200} 
             height={0} 

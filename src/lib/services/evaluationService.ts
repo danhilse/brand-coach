@@ -54,7 +54,7 @@ async function makeAPICall(content: string) {
   }
 }
   
-export async function evaluateVoicePersonality(content: string): Promise<VoicePersonalityEvaluation> {
+export async function evaluateVoicePersonality(content: string, platform: string): Promise<VoicePersonalityEvaluation> {
   const prompt = `You are a brand voice expert tasked with analyzing text based on Act-On's brand guidelines. Your focus is on evaluating voice, personality, and tone alignment. Please read the following brand guidelines carefully:
 
 <brand_guidelines>
@@ -85,12 +85,12 @@ Consider the following in your evaluation:
 - Natural & Conversational: Straightforward without being overly casual
 - Authentic & Approachable: Confident without arrogance
 - Gender-Neutral & Inclusive: Avoiding exclusionary language
-- Channel-Appropriate: Tone suitability for content type
+- Channel-Appropriate: Tone suitability for content type of ${platform}
 
 4. Challenging vs Supportive Balance:
 - Challenging elements: Content that pushes readers or questions status quo
 - Supportive elements: Content offering guidance or reassurance
-- Ratio: Percentage of challenging content (0 = fully supportive, 100 = fully challenging)
+- Ratio: Percentage of challenging content (0 = fully supportive, 50 = neutral, 100 = fully challenging)
 
 Analyze each aspect thoroughly and provide your evaluation in the following JSON format. Return only the JSON object with no additional text or formatting:
 
@@ -211,7 +211,7 @@ The scores should reflect the targeting balance, where:
 }
 
 export async function evaluateMessagingValues(content: string): Promise<MessagingValuesEvaluation> {
-  const prompt = `You are a brand messaging expert tasked with analyzing text based on Act-On's brand guidelines. Your goal is to evaluate how well the given text aligns with Act-On's messaging pillars and brand values.
+  const prompt = `You are a brand messaging expert tasked with analyzing text based on Act-On's brand guidelines. Your goal is to evaluate how well the given text aligns with Act-On's messaging framework and core values.
 
 First, carefully review the following brand guidelines:
 <brand_guidelines>
@@ -223,72 +223,104 @@ Now, analyze the following text based on these guidelines:
 ${content}
 </input_text>
 
-For your analysis:
-1. List out each messaging pillar and brand value from the guidelines
-2. For each messaging pillar:
-   - Find relevant quotes from the text
-   - Identify specific examples of alignment
-   - Consider sub-type alignment within each pillar
-   - Analyze both positive and negative aspects
-   - Score from 0-100 (0 = no alignment, 100 = perfect)
-
-3. For each brand value:
-   - Find relevant quotes from the text
-   - Identify examples embodying the value
-   - Consider alignment with value description
-   - Analyze both positive and negative aspects
-   - Score from 0-100 (0 = no alignment, 100 = perfect)
-
-Analyze thoroughly with specific examples and return your evaluation in the following JSON format. Return only the JSON object with no additional text or formatting:
+Return your analysis in the following JSON format. Return only the JSON object with no additional text or formatting:
 
 {
-  "messagingAlignment": [
-    {
-      "pillar": "[Pillar Name]",
-      "analysis": "Detailed analysis of alignment with this pillar, including specific examples, quotes, and consideration of sub-types",
-      "score": 0-100
+  "values": {
+    "Put People First": {
+      "rating": "strong|moderate|not_present",
+      "rationale": "Assessment of how well the content embodies leading with human connection, practicing respect, empathy and open communication",
+      "keyEvidence": [
+        "Quote or example showing value alignment/misalignment",
+        "Additional examples as needed"
+      ]
     },
-    {
-      "pillar": "[Pillar Name]",
-      "analysis": "Detailed analysis...",
-      "score": 0-100
+    "Be Yourself": {
+      "rating": "strong|moderate|not_present",
+      "rationale": "Assessment of how well the content demonstrates authenticity, honesty, and making room for diverse perspectives",
+      "keyEvidence": [
+        "Quote or example showing value alignment/misalignment"
+      ]
     },
-    {
-      "pillar": "[Pillar Name]",
-      "analysis": "Detailed analysis...",
-      "score": 0-100
+    "Make It Better": {
+      "rating": "strong|moderate|not_present",
+      "rationale": "Assessment of how well the content shows innovation, creativity, growth mindset, and tackling challenges",
+      "keyEvidence": [
+        "Quote or example showing value alignment/misalignment"
+      ]
+    },
+    "Do Your Best (Together)": {
+      "rating": "strong|moderate|not_present",
+      "rationale": "Assessment of how well the content demonstrates excellence, collaboration, and empowerment",
+      "keyEvidence": [
+        "Quote or example showing value alignment/misalignment"
+      ]
     }
-  ],
-  "valueAlignment": [
-    {
-      "value": "[Value Name]",
-      "analysis": "Detailed analysis of how the text embodies this value, with specific examples and quotes",
-      "score": 0-100
+  },
+  "messaging": {
+    "ACT-ON FUELS AGILE MARKETING": {
+      "Unlock your potential": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates platform acceleration and business results"
+      },
+      "Go from idea to impact in record time": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates speed and precision"
+      },
+      "Invest in your business' growth": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates ROI and efficiency gains"
+      }
     },
-    {
-      "value": "[Value Name]",
-      "analysis": "Detailed analysis...",
-      "score": 0-100
+    "INNOVATIVE SOLUTIONS FOR INNOVATIVE MARKETERS": {
+      "Generate demand and amplify your brand": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates enterprise-level features"
+      },
+      "Leverage groundbreaking AI and Analytics": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates AI capabilities and innovation"
+      },
+      "Connect the dots faster to outpace your competitors": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates integration and data environment benefits"
+      }
     },
-    {
-      "value": "[Value Name]",
-      "analysis": "Detailed analysis...",
-      "score": 0-100
-    },
-    {
-      "value": "[Value Name]",
-      "analysis": "Detailed analysis...",
-      "score": 0-100
+    "YOUR PARTNER IN MARKETING SUCCESS AT EVERY STAGE": {
+      "Get quick support every time": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates support team responsiveness"
+      },
+      "Leverage resources and expertise to win": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates partner/services ecosystem"
+      },
+      "Pursue ambitious goals": {
+        "rating": "strong|moderate|not_present",
+        "rationale": "Assessment of how well the content communicates revenue growth focus"
+      }
     }
-  ]
+  }
 }
 
-Ensure each analysis includes:
-- Specific quotes from the text
-- Examples of alignment or misalignment
-- Clear reasoning for the score
-- Consideration of all aspects of the pillar or value
-- Both strengths and areas for improvement`;
+Rating Guidelines:
+- strong: Clear, explicit evidence of the value/message being conveyed
+- moderate: Implicit or partial alignment with the value/message
+- not_present: No clear evidence of the value/message in the content
+
+For each analysis:
+- Use direct quotes from the content as evidence
+- Provide specific examples of alignment or misalignment
+- Give clear reasoning for ratings
+- Consider both explicit and implicit demonstrations of values/messaging
+- Note any missed opportunities or areas for improvement
+
+Remember to:
+1. Be specific and detailed in your rationale
+2. Use exact quotes when possible
+3. Consider context and tone
+4. Evaluate both presence and effectiveness of messaging
+5. Look for missed opportunities to reinforce values and messages`;
 
   const response = await makeAPICall(prompt);
   return JSON.parse(response);
@@ -307,58 +339,57 @@ Now, analyze this content for brand alignment:
 ${content}
 </input_text>
 
-This content is intended for ${platform}.
+This is contend intended for ${platform}.
 
-Evaluate how well this content authentically represents Act-On's brand identity by:
-
-1. Assessing alignment with Act-On's fundamental brand elements:
-- Dual personality (Supportive Challenger and White-Collar Mechanic)
-- Core messaging pillars
-- Brand voice characteristics
-- Values and audience focus
-
-2. Considering context and purpose:
-- Channel/content type and its position on the tone spectrum
-- Intended audience and their needs
-- Content objectives and how they align with brand goals
-
-The goal is not to check boxes but to evaluate how naturally and effectively the content embodies Act-On's brand essence while achieving its communication objectives.
+Evaluate how well this content authentically represents Act-On's brand identity, considering context, audience, and purpose.
 
 Provide your evaluation in this JSON format (return only the JSON, no other text):
 
 {
-  "overallScore": {
-    "analysis": "Comprehensive analysis of how effectively the content embodies Act-On's brand identity, supported by specific examples",
-    "score": 0-100
+  "diagnosis": {
+    "brandFit": {
+      "rating": "strong|moderate|needs_work",
+      "rationale": "Clear explanation of how well the content embodies Act-On's brand identity overall",
+      "keyEvidence": [
+        "Specific example from the content demonstrating brand alignment or misalignment"
+        // Additional examples as needed
+      ]
+    },
+    "audienceAlignment": {
+      "rating": "strong|moderate|needs_work",
+      "rationale": "Assessment of how well the content speaks to intended audience",
+      "keyEvidence": [
+        "Specific example from the content showing audience alignment or misalignment"
+        // Additional examples as needed
+      ]
+    },
+    "toneEffectiveness": {
+      "rating": "strong|moderate|needs_work",
+      "rationale": "Evaluation of tone appropriateness for channel and purpose",
+      "keyEvidence": [
+        "Specific example from the content demonstrating tone effectiveness or issues"
+        // Additional examples as needed
+      ]
+    }
   },
-  "strengths": [
-    "strength": {
-      "description": "Key strength demonstrating effective brand alignment",
-      "example": "Supporting example from the content"
+  "guidance": {
+    "priorityAdjustments": [
+      {
+        "focus": "Specific aspect needing attention",
+        "currentState": "Description of current approach",
+        "targetState": "Description of desired approach",
+        "implementationExample": "Concrete example of how to achieve the change"
       }
-    // Include additional strengths as needed for meaningful analysis
-  ],
-  "improvementAreas": [
-    "improvement": {
-      "description": "Specific opportunity to better align with brand identity.",
-      "example": "Supporting example from the content"
-    // Include additional improvement areas as needed for meaningful analysis
-  ],
-  "suggestions": [
-    "suggestion": {
-      "description": "Actionable recommendation to strengthen brand alignment",
-      "example": "A specific implementation example"
-    // Include additional suggestions as needed for meaningful analysis
-  ]
-}
-
-Each section should include enough specific examples and recommendations to provide meaningful guidance for improvement while maintaining focus on authentic brand expression. Return only the JSON object with no additional text or formatting.`;
+      // Additional priority adjustments as needed
+    ]
+  }
+}`;
   
     const response = await makeAPICall(prompt);
     return JSON.parse(response);
   }
 
-export async function evaluateOverallNew(content: string, platform: string): Promise<OverallEvaluation> {
+export async function _evaluateOverall(content: string, platform: string): Promise<OverallEvaluation> {
     const prompt = `You are a brand alignment expert for Act-On, a marketing automation company. Your task is to evaluate how effectively content embodies Act-On's brand identity, providing analysis in a structured JSON format.
 
 First, thoroughly review these brand guidelines:
@@ -518,7 +549,7 @@ export async function evaluateAll(content: string, platform: string, goals: stri
       messagingValues,
       overall
     ] = await Promise.all([
-      evaluateVoicePersonality(content),
+      evaluateVoicePersonality(content, platform),
       evaluateTargetAudience(content),
       evaluateMessagingValues(content),
       evaluateOverall(content, platform)

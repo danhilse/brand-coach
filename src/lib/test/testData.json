@@ -40,54 +40,59 @@
         }
       ]
     },
-    
-      "overall": {
-        "overallScore": {
-          "analysis": "The text strongly aligns with Act-On's 'Supportive Challenger' and 'White-Collar Mechanic' personalities, effectively balancing technical expertise with approachable guidance through expert insights and data-driven content.",
-          "score": 85
+
+     "overall": {
+        "diagnosis": {
+          "brandFit": {
+            "rating": "strong",
+            "rationale": "The content effectively embodies Act-On's positioning as a supportive challenger in the marketing automation space",
+            "keyEvidence": [
+              "Uses confident yet approachable language: 'Transform your marketing with intelligent automation'",
+              "Balances technical capability with practical value: 'Simplified workflows that deliver real results'",
+              "Maintains professional tone while being accessible: 'We make complex marketing simple'"
+            ]
+          },
+          "audienceAlignment": {
+            "rating": "moderate",
+            "rationale": "Content generally addresses marketer pain points but could better target the 'Disenfranchised' persona",
+            "keyEvidence": [
+              "Addresses efficiency needs: 'Automate your marketing workflows in minutes'",
+              "Could better emphasize easy migration from complex platforms",
+              "Missing specific callouts to enterprise-level capabilities"
+            ]
+          },
+          "toneEffectiveness": {
+            "rating": "strong",
+            "rationale": "Maintains appropriate balance of supportive and challenging elements for website content",
+            "keyEvidence": [
+              "Uses encouraging language: 'Take your marketing to the next level'",
+              "Incorporates challenger elements: 'Stop settling for complicated solutions'",
+              "Balances confidence with empathy: 'We understand your challenges'"
+            ]
+          }
         },
-        "strengths": [
-          {
-            "description": "Strong embodiment of the 'White-Collar Mechanic' personality through technical expertise",
-            "example": "Detailed technical explanations of welcome email best practices while maintaining accessibility"
-          },
-          {
-            "description": "Excellent demonstration of the 'Supportive' aspect of brand personality",
-            "example": "Supportive phrases like 'Not sure where to start? We've got you covered' show empathy while providing guidance"
-          },
-          {
-            "description": "Natural, conversational voice maintained throughout complex topics",
-            "example": "Accessible explanations of statistics and best practices without relying on jargon or corporate-speak"
-          }
-        ],
-        "improvementAreas": [
-          {
-            "description": "Could incorporate more of the 'Challenger' aspect of Act-On's personality",
-            "example": "Current content focuses on basic welcome email implementation without pushing readers to elevate their strategy"
-          },
-          {
-            "description": "Missing opportunities to highlight Act-On's innovative capabilities",
-            "example": "Welcome email automation discussion lacks mentions of advanced features and AI-powered capabilities"
-          },
-          {
-            "description": "Could better address the 'Disenfranchised' persona's pain points",
-            "example": "Content doesn't directly address frustrations with complex marketing automation systems"
-          }
-        ],
-        "suggestions": [
-          {
-            "description": "Add a section challenging readers to elevate their welcome email strategy",
-            "example": "Include a section titled 'Level Up Your Welcome Series with AI-powered automation' that demonstrates Act-On's advanced capabilities"
-          },
-          {
-            "description": "Include specific examples addressing the 'Disenfranchised' user's needs",
-            "example": "Add a section showing how Act-On simplifies complex automation tasks: 'Transform your 20-step process into 3 clicks'"
-          },
-          {
-            "description": "Incorporate more data-driven insights about ROI",
-            "example": "Add statistics like 'Companies using automated welcome series see 3x higher engagement rates and 2x faster conversion'"
-          }
-        ]
+        "guidance": {
+          "priorityAdjustments": [
+            {
+              "focus": "Enterprise Capability Emphasis",
+              "currentState": "Focus on general automation benefits",
+              "targetState": "Highlight enterprise-grade features and scalability",
+              "implementationExample": "Add section: 'Enterprise-Ready: Scale your marketing with confidence using our advanced segmentation and automation capabilities'"
+            },
+            {
+              "focus": "Migration Messaging",
+              "currentState": "Limited mention of platform transition",
+              "targetState": "Emphasize easy migration and superior experience",
+              "implementationExample": "Include: 'Seamless Migration: Switch from your complex MAP in days, not months, with our dedicated migration team'"
+            },
+            {
+              "focus": "Challenger Tone",
+              "currentState": "Predominantly supportive messaging",
+              "targetState": "Balance support with strategic challenge",
+              "implementationExample": "Revise to: 'Ready to demand more from your marketing automation? Discover what's possible with Act-On'"
+            }
+          ]
+        }
       },
     
     "targetAudience": {

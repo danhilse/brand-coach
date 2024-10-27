@@ -99,6 +99,32 @@ export interface VoicePersonalityEvaluation {
     suggestions: EvaluationItem[];
   };
 
+  export type Rating = 'strong' | 'moderate' | 'needs_work';
+
+export interface EvaluationSection {
+  rating: Rating;
+  rationale: string;
+  keyEvidence: string[];
+}
+
+export interface PriorityAdjustment {
+  focus: string;
+  currentState: string;
+  targetState: string;
+  implementationExample: string;
+}
+
+export interface BrandEvaluation {
+  diagnosis: {
+    brandFit: EvaluationSection;
+    audienceAlignment: EvaluationSection;
+    toneEffectiveness: EvaluationSection;
+  };
+  guidance: {
+    priorityAdjustments: PriorityAdjustment[];
+  };
+}
+
   export interface MessagingValuesEvaluation {
     messagingAlignment: Array<{
       pillar: string;
