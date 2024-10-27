@@ -23,7 +23,7 @@ async function makeAPICall(content: string) {
     body: JSON.stringify({ content })
   });
 
-  console.log(response)
+  console.log(response.json())
   
   const result = await response.json();
   if (result.error) throw new Error(result.error);
