@@ -1,6 +1,6 @@
 // route.ts
 import { NextResponse } from 'next/server';
-// import { generateResponse } from '@/lib/api-clients';
+import { generateResponse } from '@/lib/api-clients';
 
 export async function POST(request: Request) {
   try {
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     try {
-      const response = await console.log(content, provider);
+      const response = await generateResponse(content, provider);
       return NextResponse.json({ data: response });
     } catch (error: any) {
       console.error('API Error:', error);
