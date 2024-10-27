@@ -1,6 +1,5 @@
-// ContentContext.tsx
-import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+// components/ContentContext.tsx
+import { CustomSelect } from '@/components/ui/CustomSelect';
 
 export const platforms = [
   'General',
@@ -24,8 +23,8 @@ export interface ContentContextProps {
 }
 
 export const ContentContext = ({
-  platform = 'General',
-  goals = '',
+  platform,
+  goals,
   onPlatformChange,
   onGoalsChange
 }: ContentContextProps) => {
@@ -38,44 +37,10 @@ export const ContentContext = ({
         >
           Platform
         </label>
-        <div className="relative">
-          <select
-            id="platform"
-            value={platform}
-            onChange={(e) => onPlatformChange(e.target.value as Platform)}
-            className={`
-              w-full
-              h-[36px]
-              pl-3
-              pr-10
-              border
-              rounded
-              font-['Open_Sans']
-              text-[14px]
-              leading-[24px]
-              text-[var(--text)]
-              bg-[var(--white)]
-              border-[var(--border)]
-              hover:border-[var(--dark-blue-base)]
-              focus:outline-none
-              focus:border-[var(--primary-base)]
-              focus:shadow-[0_0_0_2px_rgba(0,186,190,0.2)]
-              appearance-none
-              cursor-pointer
-            `}
-          >
-            {platforms.map(p => (
-              <option
-                key={p}
-                value={p}
-                className="py-[6px] px-[12px] hover:bg-[var(--table-hover-1)] rounded"
-              >
-                {p}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3 top-[11px] w-4 h-4 text-[var(--text-light)] pointer-events-none" />
-        </div>
+        <CustomSelect 
+          value={platform}
+          onChange={onPlatformChange}
+        />
       </div>
 
       <div className="flex-1 flex flex-col">

@@ -1,2 +1,12 @@
 {
+    "favorites.resources": [
+        {
+            "filePath": "src/lib/services/evaluationService.ts",
+            "group": "Default"
+        },
+        {
+            "filePath": "src/app/page.tsx",
+            "group": "Default"
+        }
+    ]
 }
