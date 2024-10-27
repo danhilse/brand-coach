@@ -1,12 +1,6 @@
-import { Anthropic } from '@anthropic-ai/sdk';
-import OpenAI from 'openai';
 import type { ApiProvider } from './types';
 
-// Create singleton instances of clients
-const anthropicClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
-const openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-
-// Add rate limiting utility
+// Rate limiting class remains unchanged
 class RateLimit {
   private queue: Array<() => Promise<void>> = [];
   private processing = false;
@@ -58,26 +52,8 @@ class RateLimit {
   }
 }
 
-// Create rate limiters
 const anthropicRateLimit = new RateLimit(3);
 const openaiRateLimit = new RateLimit(3);
-
-// Lazy initialization of clients
-function getAnthropicClient() {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    throw new Error('ANTHROPIC_API_KEY is not configured');
-  }
-  return new Anthropic({ apiKey });
-}
-
-function getOpenAIClient() {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is not configured');
-  }
-  return new OpenAI({ apiKey });
-}
 
 async function callAnthropic(prompt: string) {
   return anthropicRateLimit.add(async () => {
@@ -85,8 +61,9 @@ async function callAnthropic(prompt: string) {
     console.log(`${new Date().toISOString()} - Starting Anthropic API call`);
     
     try {
-      const client = getAnthropicClient();
-      console.log('Client created, sending request...');
+      // Dynamically import Anthropic
+      const { Anthropic } = await import('@anthropic-ai/sdk');
+      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
       
       const response = await client.messages.create({
         model: 'claude-3-5-sonnet-20241022',
@@ -113,7 +90,10 @@ async function callAnthropic(prompt: string) {
 async function callOpenAI(prompt: string) {
   return openaiRateLimit.add(async () => {
     console.log('Making OpenAI API call at:', new Date().toISOString());
-    const client = getOpenAIClient();
+    
+    // Dynamically import OpenAI
+    const { default: OpenAI } = await import('openai');
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
     
     const response = await client.chat.completions.create({
       model: 'gpt-4-turbo-preview',
