@@ -15,19 +15,27 @@ import { brandGuidelines, icp, messaging, personality } from '@/lib/brandGuideli
 // Global config for API provider
 const API_PROVIDER = 'anthropic'; // Can be 'anthropic', 'openai', or 'test'
 
-async function makeAPICall(content: string) {
-  console.log("Making API Call")
-  const response = await fetch('/api/evaluate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content })
-  });
+// lib/services/api.ts
+export async function makeAPICall(prompt: string) {
+  try {
+    const response = await fetch('/api/evaluate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt }),
+    });
 
-  console.log(response.json())
-  
-  const result = await response.json();
-  if (result.error) throw new Error(result.error);
-  return result.data;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
 }
   
 export async function evaluateVoicePersonality(content: string): Promise<VoicePersonalityEvaluation> {
