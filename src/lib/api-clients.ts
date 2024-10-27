@@ -58,16 +58,34 @@ class RateLimit {
   }
 }
 
-// Create rate limiters - adjust these values based on your API limits
-const anthropicRateLimit = new RateLimit(3); // 3 requests per second
+// Create rate limiters
+const anthropicRateLimit = new RateLimit(3);
 const openaiRateLimit = new RateLimit(3);
 
+// Lazy initialization of clients
+function getAnthropicClient() {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY is not configured');
+  }
+  return new Anthropic({ apiKey });
+}
+
+function getOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('OPENAI_API_KEY is not configured');
+  }
+  return new OpenAI({ apiKey });
+}
+
 async function callAnthropic(prompt: string) {
+  return anthropicRateLimit.add(async () => {
     const startTime = Date.now();
     console.log(`${new Date().toISOString()} - Starting Anthropic API call`);
     
     try {
-      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+      const client = getAnthropicClient();
       console.log('Client created, sending request...');
       
       const response = await client.messages.create({
@@ -89,12 +107,15 @@ async function callAnthropic(prompt: string) {
       console.error('Anthropic API call failed:', error);
       throw error;
     }
-  }
+  });
+}
 
 async function callOpenAI(prompt: string) {
   return openaiRateLimit.add(async () => {
     console.log('Making OpenAI API call at:', new Date().toISOString());
-    const response = await openaiClient.chat.completions.create({
+    const client = getOpenAIClient();
+    
+    const response = await client.chat.completions.create({
       model: 'gpt-4-turbo-preview',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
