@@ -45,7 +45,7 @@
   --side-nav-width: 220px;
   --horizontal-padding: 24px;
   --content-max-width: 997px;
-  --content-min-width: 837px;
+  --content-min-width: 637px;
   
   
 }
@@ -195,47 +195,4 @@ a:hover {
   background-color: var(--primary-base);
   transition: width 0.3s ease;
   border-radius: 4px;
-}
-
-/* Main Layout Container */
-.layout-container {
-  display: flex;
-  min-width: 1105px; /* 837px + 48px padding + 220px nav */
-}
-
-/* Side Navigation */
-.side-nav {
-  width: var(--side-nav-width);
-  flex-shrink: 0;
-  height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-}
-
-/* Main Content Area */
-.main-content {
-  margin-left: var(--side-nav-width);
-  width: calc(100% - var(--side-nav-width));
-  min-width: calc(var(--content-min-width) + (var(--horizontal-padding) * 2));
-}
-
-/* Content Container - Standard */
-.container-acton {
-  max-width: var(--content-max-width);
-  min-width: var(--content-min-width);
-  margin: 0 auto;
-  padding: 0 var(--horizontal-padding);
-}
-
-/* Content Container - Full Width */
-.container-acton-full {
-  width: 100%;
-  padding: 0 var(--horizontal-padding);
-}
-
-/* Utility class for content that needs to respect max-width */
-.respect-max-width {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
 }

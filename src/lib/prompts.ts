@@ -80,8 +80,6 @@ Your recommendations should be extremely specific and immediately actionable. Ea
 - A clear explanation of how this change helps achieve the target tone balance"`;
 }
 
-
-
 export function formatVoicePersonalityEvaluation(text: string): string {
   return `You are a brand voice expert tasked with analyzing text based on Act-On's brand guidelines. Your focus is on evaluating voice, personality, and tone alignment. Please read the following brand guidelines carefully, as they will form the basis of your evaluation:
 
