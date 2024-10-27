@@ -82,7 +82,7 @@ export default function Home() {
           >
             {isLoading ? 'Evaluating...' : 'Evaluate'}
           </button>
-        </form>
+        </form> 
 
         {error && (
           <div className="bg-[var(--alert-base)] bg-opacity-10 border border-[var(--alert-base)] text-[var(--alert-base)] px-4 py-3 rounded mb-4">
