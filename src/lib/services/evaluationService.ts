@@ -15,26 +15,41 @@ import { brandGuidelines, icp, messaging, personality } from '@/lib/brandGuideli
 // Global config for API provider
 const API_PROVIDER = 'anthropic'; // Can be 'anthropic', 'openai', or 'test'
 
-// lib/services/api.ts
-export async function makeAPICall(prompt: string) {
-  try {
-    const response = await fetch('/api/evaluate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+async function makeAPICall(content: string) {
+  const maxRetries = 3;
+  const timeout = 60000; // 30 seconds
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      
+      console.log(`Making API Call (attempt ${attempt})`);
+      
+      const response = await fetch('/api/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      if (result.error) throw new Error(result.error);
+      return result.data;
+      
+    } catch (error: any) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      // Wait before retrying (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
     }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
   }
 }
   

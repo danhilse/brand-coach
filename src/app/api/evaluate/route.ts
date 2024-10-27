@@ -4,7 +4,11 @@ import { generateResponse } from '@/lib/api-clients';
 
 export async function POST(request: Request) {
   try {
-    const { content, provider } = await request.json();
+    // Clone the request before reading it
+    const clonedRequest = request.clone();
+    
+    // Read the body from the cloned request
+    const { content, provider } = await clonedRequest.json();
 
     if (!content) {
       return NextResponse.json(
