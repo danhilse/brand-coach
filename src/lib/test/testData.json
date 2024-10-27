@@ -1,0 +1,108 @@
+{
+    "messagingValues": {
+      "messagingAlignment": [
+        {
+          "pillar": "Act-On Fuels Agile Marketing",
+          "analysis": "The text demonstrates moderate alignment with this...ntuitive nature and business results measurement.",
+          "score": 65
+        },
+        {
+          "pillar": "Innovative Solutions for Innovative Marketers",
+          "analysis": "The text shows limited alignment with this pillar....ences to AI, analytics, or seamless integrations.",
+          "score": 40
+        },
+        {
+          "pillar": "Your Partner in Marketing Success at Every Stage",
+          "analysis": "Strong alignment with this pillar is evident throu...his pillar's emphasis on partnership and support.",
+          "score": 85
+        }
+      ],
+      "valueAlignment": [
+        {
+          "value": "Put People First",
+          "analysis": "The text strongly embodies this value through its ...nce demonstrate strong alignment with this value.",
+          "score": 90
+        },
+        {
+          "value": "Be Yourself",
+          "analysis": "The text shows moderate alignment through its auth... personal experiences to fully embody this value.",
+          "score": 70
+        },
+        {
+          "value": "Do Your Best (Together)",
+          "analysis": "The content demonstrates this value through its co...ngly emphasize dynamic collaboration and urgency.",
+          "score": 75
+        },
+        {
+          "value": "Make It Better",
+          "analysis": "The text shows good alignment with this value thro... challenging assumptions or innovative solutions.",
+          "score": 65
+        }
+      ]
+    },
+    "overall": {
+      "overallScore": {
+        "analysis": "The text strongly aligns with Act-On's 'Supportive... through expert insights and data-driven content.",
+        "score": 85
+      },
+      "strengths": [
+        "Strong embodiment of the 'White-Collar Mechanic' p...ical explanations of welcome email best practices",
+        "Excellent demonstration of the 'Supportive' aspect... 'Not sure where to start? We've got you covered'",
+        "Natural, conversational voice maintained throughou...ble explanations of statistics and best practices"
+      ],
+      "improvementAreas": [
+        "Could incorporate more of the 'Challenger' aspect ...elcome email strategy beyond basic implementation",
+        "Missing opportunities to highlight Act-On's innova...lities in the context of welcome email automation",
+        "Could more explicitly address the 'Disenfranchised...oints around complex marketing automation systems"
+      ],
+      "suggestions": [
+        "Add a section challenging readers to elevate their...d experience with Act-On's AI-powered automation'",
+        "Include specific examples of how Act-On's platform... the 'Disenfranchised' user's need for simplicity",
+        "Incorporate more data-driven insights about ROI an...r engagement rates with automated welcome series'"
+      ]
+    },
+    "targetAudience": {
+      "userBuyerFocus": {
+        "analysis": "The content is approximately 70% user-focused and ...agers and Campaign Managers rather than CMOs/VPs.",
+        "score": 30
+      },
+      "customerTypeFocus": {
+        "analysis": "Content shows an 80% graduator focus vs 20% disenf...xperienced MAP users looking to switch platforms.",
+        "score": 20
+      }
+    },
+    "voicePersonality": {
+      "personalityEvaluation": {
+        "supportiveChallenger": {
+          "analysis": "The text effectively embodies the Supportive Chall...eaders more to challenge their current practices.",
+          "score": 85
+        },
+        "whiteCollarMechanic": {
+          "analysis": "The content demonstrates strong technical expertis...ecifications to fully embody the mechanic aspect.",
+          "score": 80
+        }
+      },
+      "voiceEvaluation": {
+        "naturalConversational": {
+          "analysis": "The content maintains a natural, conversational tone throughout.",
+          "score": 85
+        },
+        "authenticApproachable": {
+          "analysis": "The text demonstrates authenticity and approachability in its explanations.",
+          "score": 80
+        },
+        "genderNeutral": {
+          "analysis": "The content uses gender-neutral language consistently.",
+          "score": 90
+        },
+        "channelTailored": {
+          "analysis": "The content is well-tailored to the blog format.",
+          "score": 75
+        }
+      },
+      "toneEvaluation": {
+        "analysis": "The content leans more supportive than challenging...ctly with the recommended ratio for blog content.",
+        "score": 30
+      }
+    }
+  }

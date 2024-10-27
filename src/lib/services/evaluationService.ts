@@ -431,8 +431,19 @@ Ensure your recommendations:
   const response = await makeAPICall(prompt);
   return JSON.parse(response);
 }
+
+import testData from '@/lib/test/testData.json';
+
+// Helper function to create a delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
   
 export async function evaluateAll(content: string) {
+  if (content.trim().toLowerCase() === 'test') {
+    await delay(3000); // 5 seconds
+    return testData;
+  }
+
   console.log(`Starting all evaluations at ${new Date().toISOString()}`);
   
   try {

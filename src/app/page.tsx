@@ -1,19 +1,16 @@
+// page.tsx
 'use client';
 
 import { useState } from 'react';
 import Image from 'next/image';
 import type { ApiProvider } from '@/lib/types';
-
-// Import only what we need from evaluations
 import { evaluateAll } from '@/lib/services/evaluationService';
-
 import type { 
   VoicePersonalityEvaluation, 
   TargetAudienceEvaluation,
   MessagingValuesEvaluation,
   OverallEvaluation 
 } from '@/lib/types';
-
 import { DocumentInput } from '@/components/DocumentInput';
 import { BrandPersonalitySection } from '@/components/BrandPersonalitySection';
 import { VoiceAnalysisSection } from '@/components/VoiceAnalysisSection';
@@ -21,7 +18,8 @@ import { ToneSpectrumSection } from '@/components/ToneSpectrumSection';
 import { TargetAudienceMatrix } from '@/components/TargetAudienceMatrix';
 import { MessagingValuesSection } from '@/components/MessagingValuesSection';
 import { OverallEvaluationSection } from '@/components/OverallEvaluation';
-// import { ModelSelector } from '@/components/ModelSelector';
+import { LoadingState } from '@/components/ui/LoadingState';
+import { LoadingButton } from '@/components/ui/LoadingButton';
 
 interface Evaluation {
   voicePersonality?: VoicePersonalityEvaluation;
@@ -48,6 +46,7 @@ export default function Home() {
     try {
       const result = await evaluateAll(input);
       setEvaluation(result);
+      console.log(result) // console log made here
     } catch (err: any) {
       setError(err.message || 'An error occurred during evaluation');
     } finally {
@@ -75,13 +74,14 @@ export default function Home() {
             onError={setError}
           />
           
-          <button
+          <LoadingButton
             type="submit"
-            disabled={isLoading || !input.trim()}
-            className="btn-acton btn-acton-primary w-full"
+            isLoading={isLoading}
+            disabled={!input.trim()}
+            className="w-full"
           >
-            {isLoading ? 'Evaluating...' : 'Evaluate'}
-          </button>
+            Evaluate
+          </LoadingButton>
         </form> 
 
         {error && (
@@ -90,7 +90,9 @@ export default function Home() {
           </div>
         )}
 
-        {evaluation.overall && (
+        {isLoading ? (
+          <LoadingState />
+        ) : evaluation.overall && (
           <div className="space-y-8">
             <OverallEvaluationSection evaluation={evaluation.overall} />
             

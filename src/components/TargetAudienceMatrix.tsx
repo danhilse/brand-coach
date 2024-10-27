@@ -44,90 +44,93 @@ export const TargetAudienceMatrix = ({ evaluation }: { evaluation: TargetAudienc
         Target Audience Analysis
       </h3>
       
-      <div className="relative w-full max-w-2xl mx-auto aspect-square mb-6">
-        {/* Axes */}
-        <div className="absolute left-0 top-1/2 w-full h-px bg-[var(--border)]">
-          {/* Left arrow */}
-          <div className="absolute left-0 -translate-y-1/2">
-            <svg width="12" height="12" className="text-[var(--border)]">
-              <path d="M12 6H2M2 6L7 1M2 6L7 11" stroke="currentColor" fill="none" strokeWidth="1.5"/>
-            </svg>
+      {/* Updated container with a max-width that matches Act-On's specs */}
+      <div className="flex justify-center mb-6">
+        <div className="relative w-full max-w-[550px] aspect-square">
+          {/* Axes */}
+          <div className="absolute left-0 top-1/2 w-full h-px bg-[var(--border)]">
+            {/* Left arrow */}
+            <div className="absolute left-0 -translate-y-1/2">
+              <svg width="12" height="12" className="text-[var(--border)]">
+                <path d="M12 6H2M2 6L7 1M2 6L7 11" stroke="currentColor" fill="none" strokeWidth="1.5"/>
+              </svg>
+            </div>
+            {/* Right arrow */}
+            <div className="absolute right-0 -translate-y-1/2">
+              <svg width="12" height="12" className="text-[var(--border)]">
+                <path d="M0 6H10M10 6L5 1M10 6L5 11" stroke="currentColor" fill="none" strokeWidth="1.5"/>
+              </svg>
+            </div>
           </div>
-          {/* Right arrow */}
-          <div className="absolute right-0 -translate-y-1/2">
-            <svg width="12" height="12" className="text-[var(--border)]">
-              <path d="M0 6H10M10 6L5 1M10 6L5 11" stroke="currentColor" fill="none" strokeWidth="1.5"/>
-            </svg>
+          <div className="absolute left-1/2 top-0 w-px h-full bg-[var(--border)]">
+            {/* Top arrow */}
+            <div className="absolute -translate-x-1/2 top-0">
+              <svg width="12" height="12" className="text-[var(--border)]">
+                <path d="M6 12V2M6 2L1 7M6 2L11 7" stroke="currentColor" fill="none" strokeWidth="1.5"/>
+              </svg>
+            </div>
+            {/* Bottom arrow */}
+            <div className="absolute -translate-x-1/2 bottom-0">
+              <svg width="12" height="12" className="text-[var(--border)]">
+                <path d="M6 0V10M6 10L1 5M6 10L11 5" stroke="currentColor" fill="none" strokeWidth="1.5"/>
+              </svg>
+            </div>
           </div>
-        </div>
-        <div className="absolute left-1/2 top-0 w-px h-full bg-[var(--border)]">
-          {/* Top arrow */}
-          <div className="absolute -translate-x-1/2 top-0">
-            <svg width="12" height="12" className="text-[var(--border)]">
-              <path d="M6 12V2M6 2L1 7M6 2L11 7" stroke="currentColor" fill="none" strokeWidth="1.5"/>
-            </svg>
-          </div>
-          {/* Bottom arrow */}
-          <div className="absolute -translate-x-1/2 bottom-0">
-            <svg width="12" height="12" className="text-[var(--border)]">
-              <path d="M6 0V10M6 10L1 5M6 10L11 5" stroke="currentColor" fill="none" strokeWidth="1.5"/>
-            </svg>
-          </div>
-        </div>
 
-        {/* Axis Labels */}
-        <AxisLabel 
-          text="DISENFRANCHISED" 
-          className="left-1/2 -top-6 transform -translate-x-1/2 text-center"
-        />
-        <AxisLabel 
-          text="GRADUATOR" 
-          className="left-1/2 -bottom-6 transform -translate-x-1/2 text-center"
-        />
-        <AxisLabel 
-          text="USER" 
-          className="top-1/2 -left-10 transform -translate-y-1/2 text-center"
-        />
-        <AxisLabel 
-          text="BUYER" 
-          className="top-1/2 -right-12 transform -translate-y-1/2 text-center"
-        />
+          {/* Axis Labels */}
+          <AxisLabel 
+            text="DISENFRANCHISED" 
+            className="left-1/2 -top-6 transform -translate-x-1/2 text-center"
+          />
+          <AxisLabel 
+            text="GRADUATOR" 
+            className="left-1/2 -bottom-6 transform -translate-x-1/2 text-center"
+          />
+          <AxisLabel 
+            text="USER" 
+            className="top-1/2 -left-10 transform -translate-y-1/2 text-center"
+          />
+          <AxisLabel 
+            text="BUYER" 
+            className="top-1/2 -right-12 transform -translate-y-1/2 text-center"
+          />
 
-        {/* Quadrant Text */}
-        <QuadrantText
-          title="THE 'DISENFRANCHISED' USER"
-          description="Experience marketing automation user that's frustrated with their existing software platform. Looking for solutions that make their jobs easier."
-          className="left-[2.5%] top-[2.5%]"
-        />
-        
-        <QuadrantText
-          title="THE 'DISENFRANCHISED' BUYER"
-          description="Marketing leader that is replacing an existing marketing automation platform. They have to lower their lower costs due to budgetary pressure, and they have to prove marketing's ROI; migration is a point of friction."
-          className="right-[2.5%] top-[2.5%]"
-        />
-        
-        <QuadrantText
-          title="THE 'GRADUATOR' USER"
-          description="A user that is new to marketing automation. They don't know what's possible since they haven't done it before, but they know what they want to do. Need software to achieve that desire, and education on how to use that software."
-          className="left-[2.5%] bottom-[2.5%]"
-        />
-        
-        <QuadrantText
-          title="THE 'GRADUATOR' BUYER"
-          description="Marketing leader that is building a new department, or graduating to marketing automation platforms in order to automate and scale their marketing efforts."
-          className="right-[2.5%] bottom-[2.5%]"
-        />
+          {/* Quadrant Text */}
+          <QuadrantText
+            title="THE 'DISENFRANCHISED' USER"
+            description="Experience marketing automation user that's frustrated with their existing software platform. Looking for solutions that make their jobs easier."
+            className="left-[-2.5%] top-[2.5%]"
+          />
+          
+          <QuadrantText
+            title="THE 'DISENFRANCHISED' BUYER"
+            description="Marketing leader that is replacing an existing marketing automation platform. They have to lower their lower costs due to budgetary pressure, and they have to prove marketing's ROI; migration is a point of friction."
+            className="right-[-2.5%] top-[2.5%]"
+          />
+          
+          <QuadrantText
+            title="THE 'GRADUATOR' USER"
+            description="A user that is new to marketing automation. They don't know what's possible since they haven't done it before, but they know what they want to do. Need software to achieve that desire, and education on how to use that software."
+            className="left-[-2.5%] bottom-[2.5%]"
+          />
+          
+          <QuadrantText
+            title="THE 'GRADUATOR' BUYER"
+            description="Marketing leader that is building a new department, or graduating to marketing automation platforms in order to automate and scale their marketing efforts."
+            className="right-[-2.5%] bottom-[2.5%]"
+          />
 
-        {/* Position Indicator */}
-        <div 
-          className="absolute w-3 h-3 bg-[var(--primary-base)] rounded-full transform -translate-x-1/2 -translate-y-1/2"
-          style={{ 
-            left: `${evaluation.userBuyerFocus.score}%`, 
-            top: `${evaluation.customerTypeFocus.score}%` 
-          }}
-        >
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-[var(--table-hover-1)] text-[var(--primary-base)] px-2 py-1 rounded text-[12px] leading-[18px] whitespace-nowrap font-semibold">
-            ({evaluation.userBuyerFocus.score}, {evaluation.customerTypeFocus.score})
+          {/* Position Indicator */}
+          <div 
+            className="absolute w-3 h-3 bg-[var(--primary-base)] rounded-full transform -translate-x-1/2 -translate-y-1/2"
+            style={{ 
+              left: `${evaluation.userBuyerFocus.score}%`, 
+              top: `${evaluation.customerTypeFocus.score}%` 
+            }}
+          >
+            <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-[var(--table-hover-1)] text-[var(--primary-base)] px-2 py-1 rounded text-[12px] leading-[18px] whitespace-nowrap font-semibold">
+              ({evaluation.userBuyerFocus.score}, {evaluation.customerTypeFocus.score})
+            </div>
           </div>
         </div>
       </div>

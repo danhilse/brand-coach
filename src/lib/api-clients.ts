@@ -36,7 +36,6 @@ class RateLimit {
     while (this.queue.length > 0) {
       const now = Date.now();
       const timeToWait = Math.max(0, this.lastRequestTime + this.minRequestGap - now);
-      // const timeToWait = 100;
       
       if (timeToWait > 0) {
         await new Promise(resolve => setTimeout(resolve, timeToWait));
@@ -62,7 +61,6 @@ async function callAnthropic(prompt: string) {
     console.log(`${new Date().toISOString()} - Starting Anthropic API call`);
     
     try {
-      // Dynamically import Anthropic
       const { Anthropic } = await import('@anthropic-ai/sdk');
       const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
       
@@ -92,21 +90,25 @@ async function callOpenAI(prompt: string) {
   return openaiRateLimit.add(async () => {
     console.log('Making OpenAI API call at:', new Date().toISOString());
     
-    // Dynamically import OpenAI
-    const { default: OpenAI } = await import('openai');
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-    
-    const response = await client.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.3,
-      max_tokens: 2048
-    });
+    try {
+      const { default: OpenAI } = await import('openai');
+      const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+      
+      const response = await client.chat.completions.create({
+        model: 'gpt-4-turbo-preview',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.3,
+        max_tokens: 2048
+      });
 
-    if (!response.choices[0]?.message?.content) {
-      throw new Error('Unexpected response format from OpenAI API');
+      if (!response.choices[0]?.message?.content) {
+        throw new Error('Unexpected response format from OpenAI API');
+      }
+      return response.choices[0].message.content;
+    } catch (error) {
+      console.error('OpenAI API call failed:', error);
+      throw error;
     }
-    return response.choices[0].message.content;
   });
 }
 
@@ -122,8 +124,27 @@ const apiClients = {
 
 export async function generateResponse(
   prompt: string, 
-  provider: ApiProvider = 'anthropic'
+  primaryProvider: ApiProvider = 'anthropic',
+  enableFailover: boolean = true
 ): Promise<string> {
-  const apiCall = apiClients[provider];
-  return await apiCall(prompt);
+  const fallbackProvider: ApiProvider = primaryProvider === 'anthropic' ? 'openai' : 'anthropic';
+  
+  try {
+    // Try primary provider first
+    return await apiClients[primaryProvider](prompt);
+  } catch (error) {
+    if (!enableFailover || primaryProvider === 'test') {
+      throw error;
+    }
+    
+    console.log(`Falling back to ${fallbackProvider} after ${primaryProvider} failed`);
+    
+    try {
+      // Try fallback provider
+      return await apiClients[fallbackProvider](prompt);
+    } catch (fallbackError) {
+      console.error('Both providers failed:', { primary: error, fallback: fallbackError });
+      throw new Error(`Both ${primaryProvider} and ${fallbackProvider} APIs failed`);
+    }
+  }
 }

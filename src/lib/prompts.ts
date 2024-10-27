@@ -424,22 +424,3 @@ After your analysis, provide your evaluation in the following format:
 
 Ensure that your evaluation is thorough, specific, and directly tied to Act-On's brand guidelines. Provide concrete examples from the input text to support your assessment and suggestions.`;
 }
-
-
-// <best_practices>
-// <do>
-//   [List of specific practices to follow to achieve the target balance, with examples]
-// </do>
-// <dont>
-//   [List of practices to avoid, with examples of why they would push the balance in the wrong direction]
-// </dont>
-// </best_practices>
-
-// <implementation_priority>
-// <high_impact>
-//   [List the most crucial changes that will have the biggest impact on achieving the target tone balance]
-// </high_impact>
-// <secondary>
-//   [Additional changes that would help fine-tune the tone after primary changes are made]
-// </secondary>
-// </implementation_priority>

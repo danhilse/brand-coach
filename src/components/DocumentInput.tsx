@@ -1,13 +1,22 @@
 import { useState, useRef } from 'react';
 import { Paperclip } from 'lucide-react';
+import { ContentContext, type Platform } from './ContentContext';
 
 interface DocumentInputProps {
   value: string;
+  platform: Platform;
+  goals: string;
   onChange: (text: string) => void;
+  onPlatformChange: (platform: Platform) => void;
+  onGoalsChange: (goals: string) => void;
   onError: (error: string) => void;
 }
 
-export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) => {
+export const DocumentInput = ({ 
+  value, 
+  onChange,
+  onError 
+}: Omit<DocumentInputProps, 'platform' | 'goals' | 'onPlatformChange' | 'onGoalsChange'>) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,7 +93,7 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
   const baseInputStyles = `
     w-full 
     min-h-[200px] 
-    px-3 
+    pl-3 
     py-2
     pr-10 /* Added padding to the right */
     border 
@@ -96,6 +105,7 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
     focus:outline-none
     focus:border-[var(--primary-base)]
     focus:shadow-[0_0_0_2px_rgba(0,186,190,0.2)]
+    resize-y
   `;
 
   const dragStyles = isDragging ? `
@@ -106,71 +116,77 @@ export const DocumentInput = ({ value, onChange, onError }: DocumentInputProps) 
   `;
 
   return (
-    <div className="relative">
-      <label 
-        htmlFor="text" 
-        className="block mb-2 text-[14px] leading-[20px] font-semibold text-[var(--text)]"
-      >
-        Enter text to evaluate:
-      </label>
-      <div 
-        className={`relative ${isDragging ? 'border-[var(--primary-base)]' : ''}`}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <textarea
-          id="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className={`${baseInputStyles} ${dragStyles}`}
-          placeholder="Paste your text here or drag and drop a file..."
-        />
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className={`
-            absolute 
-            top-2 
-            right-2 
-            p-2 
-            text-[var(--text-light)]
-            hover:text-[var(--text)] 
-            rounded-full 
-            hover:bg-[var(--table-hover-1)]
-            transition-colors
-            duration-200
-          `}
-          title="Attach file"
+    <div className="flex gap-6">
+            <ContentContext />
+      <div className="flex-1 relative">
+        <label 
+          htmlFor="text" 
+          className="block mb-2 text-[14px] leading-[20px] font-semibold text-[var(--text)]"
         >
-          <Paperclip className="w-4 h-4" />
-        </button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".txt,.pdf,.doc,.docx"
-          onChange={handleFileInput}
-          className="hidden"
-        />
-      </div>
-      {isDragging && (
-        <div className={`
-          absolute 
-          inset-0 
-          border-2 
-          border-[var(--primary-base)] 
-          rounded 
-          bg-[var(--table-hover-1)]
-          bg-opacity-50 
-          flex 
-          items-center 
-          justify-center 
-          pointer-events-none
-        `}>
-          <p className="text-[var(--primary-base)] font-semibold">Drop file here</p>
+          Enter text to evaluate:
+        </label>
+        <div 
+          className={`relative h-full ${isDragging ? 'border-[var(--primary-base)]' : ''}`}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          <textarea
+            id="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className={`${baseInputStyles} ${dragStyles} h-[calc(100%-30px)]`}
+            placeholder="Paste your text here or drag and drop a file..."
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className={`
+              absolute 
+              top-2 
+              right-2 
+              p-2 
+              text-[var(--text-light)]
+              hover:text-[var(--text)] 
+              rounded-full 
+              hover:bg-[var(--table-hover-1)]
+              transition-colors
+              duration-200
+            `}
+            title="Attach file"
+          >
+            <Paperclip className="w-4 h-4" />
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt,.pdf,.doc,.docx"
+            onChange={handleFileInput}
+            className="hidden"
+          />
         </div>
-      )}
+        {isDragging && (
+          <div className={`
+            absolute 
+            inset-0 
+            border-2 
+            border-[var(--primary-base)] 
+            rounded 
+            bg-[var(--table-hover-1)]
+            bg-opacity-50 
+            flex 
+            items-center 
+            justify-center 
+            pointer-events-none
+            mt-8
+          `}>
+            <p className="text-[var(--primary-base)] font-semibold">Drop file here</p>
+          </div>
+        )}
+      </div>
+
+
     </div>
   );
 };

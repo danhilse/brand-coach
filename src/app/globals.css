@@ -196,3 +196,55 @@ a:hover {
   transition: width 0.3s ease;
   border-radius: 4px;
 }
+
+/* components/ui/loading.module.css */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+
+/* Add to globals.css */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--border) 0%,
+    var(--table-hover-1) 50%,
+    var(--border) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* If you prefer the simpler version */
+.loading-skeleton-simple {
+  background: var(--border);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
