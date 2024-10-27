@@ -1,4 +1,4 @@
-// components/ContentContext.tsx
+// ContentContext.tsx
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
@@ -17,20 +17,20 @@ export const platforms = [
 export type Platform = typeof platforms[number];
 
 export interface ContentContextProps {
-  initialPlatform?: Platform;
-  initialGoals?: string;
+  platform: Platform;
+  goals: string;
+  onPlatformChange: (platform: Platform) => void;
+  onGoalsChange: (goals: string) => void;
 }
 
 export const ContentContext = ({
-  initialPlatform = 'General',
-  initialGoals = ''
+  platform = 'General',
+  goals = '',
+  onPlatformChange,
+  onGoalsChange
 }: ContentContextProps) => {
-  const [platform, setPlatform] = useState<Platform>(initialPlatform);
-  const [goals, setGoals] = useState(initialGoals);
-
   return (
     <div className="flex flex-col gap-4 flex-2">
-      {/* Platform Select */}
       <div>
         <label
           htmlFor="platform"
@@ -42,7 +42,7 @@ export const ContentContext = ({
           <select
             id="platform"
             value={platform}
-            onChange={(e) => setPlatform(e.target.value as Platform)}
+            onChange={(e) => onPlatformChange(e.target.value as Platform)}
             className={`
               w-full
               h-[36px]
@@ -78,7 +78,6 @@ export const ContentContext = ({
         </div>
       </div>
 
-      {/* Communication Goals */}
       <div className="flex-1 flex flex-col">
         <label
           htmlFor="goals"
@@ -89,7 +88,7 @@ export const ContentContext = ({
         <textarea
           id="goals"
           value={goals}
-          onChange={(e) => setGoals(e.target.value)}
+          onChange={(e) => onGoalsChange(e.target.value)}
           placeholder="Describe your communication objectives..."
           className={`
             flex-1

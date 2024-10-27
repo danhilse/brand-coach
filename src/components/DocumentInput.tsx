@@ -1,3 +1,4 @@
+// DocumentInput.tsx
 import { useState, useRef } from 'react';
 import { Paperclip } from 'lucide-react';
 import { ContentContext, type Platform } from './ContentContext';
@@ -14,9 +15,13 @@ interface DocumentInputProps {
 
 export const DocumentInput = ({ 
   value, 
+  platform,
+  goals,
   onChange,
+  onPlatformChange,
+  onGoalsChange,
   onError 
-}: Omit<DocumentInputProps, 'platform' | 'goals' | 'onPlatformChange' | 'onGoalsChange'>) => {
+}: DocumentInputProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -117,7 +122,12 @@ export const DocumentInput = ({
 
   return (
     <div className="flex gap-6">
-            <ContentContext />
+      <ContentContext 
+        platform={platform}
+        goals={goals}
+        onPlatformChange={onPlatformChange}
+        onGoalsChange={onGoalsChange}
+      />
       <div className="flex-1 relative">
         <label 
           htmlFor="text" 

@@ -438,7 +438,8 @@ import testData from '@/lib/test/testData.json';
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   
-export async function evaluateAll(content: string) {
+export async function evaluateAll(content: string, platform: string, goals: string) {
+
   if (content.trim().toLowerCase() === 'test') {
     await delay(3000); // 5 seconds
     return testData;

@@ -11,6 +11,9 @@ import type {
   MessagingValuesEvaluation,
   OverallEvaluation 
 } from '@/lib/types';
+import type { 
+  Platform
+} from '@/components/ContentContext';
 import { DocumentInput } from '@/components/DocumentInput';
 import { BrandPersonalitySection } from '@/components/BrandPersonalitySection';
 import { VoiceAnalysisSection } from '@/components/VoiceAnalysisSection';
@@ -30,10 +33,12 @@ interface Evaluation {
 
 export default function Home() {
   const [input, setInput] = useState('');
+  const [platform, setPlatform] = useState<Platform>('General');
+  const [goals, setGoals] = useState('');
   const [evaluation, setEvaluation] = useState<Evaluation>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [activeApi, setActiveApi] = useState<ApiProvider>('anthropic');
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,9 +49,9 @@ export default function Home() {
     setEvaluation({});
 
     try {
-      const result = await evaluateAll(input);
+      const result = await evaluateAll(input, platform, goals); // Update evaluateAll to accept platform and goals
       setEvaluation(result);
-      console.log(result) // console log made here
+      console.log(result);
     } catch (err: any) {
       setError(err.message || 'An error occurred during evaluation');
     } finally {
@@ -70,7 +75,11 @@ export default function Home() {
         <form onSubmit={handleSubmit} className="space-y-4 mb-8">
           <DocumentInput 
             value={input}
+            platform={platform}
+            goals={goals}
             onChange={setInput}
+            onPlatformChange={setPlatform}
+            onGoalsChange={setGoals}
             onError={setError}
           />
           
