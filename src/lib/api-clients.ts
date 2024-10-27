@@ -35,7 +35,8 @@ class RateLimit {
     
     while (this.queue.length > 0) {
       const now = Date.now();
-      const timeToWait = Math.max(0, this.lastRequestTime + this.minRequestGap - now);
+      // const timeToWait = Math.max(0, this.lastRequestTime + this.minRequestGap - now);
+      const timeToWait = 100;
       
       if (timeToWait > 0) {
         await new Promise(resolve => setTimeout(resolve, timeToWait));
