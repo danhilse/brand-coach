@@ -16,8 +16,8 @@ import { brandGuidelines, icp, messaging, personality } from '@/lib/brandGuideli
 const API_PROVIDER = 'anthropic'; // Can be 'anthropic', 'openai', or 'test'
 
 async function makeAPICall(content: string) {
-  const maxRetries = 3;
-  const timeout = 60000; // 30 seconds
+  const maxRetries = 2;
+  const timeout = 55000; // Set to 55s to be under the 60s function limit
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -44,6 +44,7 @@ async function makeAPICall(content: string) {
       return result.data;
       
     } catch (error: any) {
+      console.error(`Attempt ${attempt} failed:`, error);
       if (attempt === maxRetries) {
         throw error;
       }

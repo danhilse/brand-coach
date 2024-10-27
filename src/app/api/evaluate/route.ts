@@ -1,13 +1,13 @@
-// route.ts
+// src/app/api/evaluate/route.ts
 import { NextResponse } from 'next/server';
 import { generateResponse } from '@/lib/api-clients';
 
+export const maxDuration = 60; // Set to 60 seconds
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
-    // Clone the request before reading it
     const clonedRequest = request.clone();
-    
-    // Read the body from the cloned request
     const { content, provider } = await clonedRequest.json();
 
     if (!content) {
