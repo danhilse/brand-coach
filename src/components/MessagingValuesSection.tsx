@@ -20,8 +20,12 @@ const RatingBadge = ({ rating }: RatingBadgeProps) => {
     not_present: {
       background: 'rgba(242, 86, 86, 0.1)', // --alert-base with 10% opacity
       text: 'rgb(242, 86, 86)' // --alert-base
+    },
+    needs_work: {
+      background: 'rgba(242, 86, 86, 0.1)', // --alert-base with 10% opacity
+      text: 'rgb(242, 86, 86)' // --alert-base
     }
-  };
+  } as const;
 
   const style = styles[rating];
 

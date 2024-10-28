@@ -1,95 +1,6 @@
 // types.ts
-// export type ApiProvider = 'anthropic' | 'openai' | 'test';
 
-// export interface ApiResponse<T> {
-//   data?: T;
-//   error?: string;
-// }
-
-export interface ParsedResponse {
-  [key: string]: any;
-}
-
-// lib/types.ts
-export interface VoicePersonalityEvaluation {
-    personalityEvaluation: {
-      supportiveChallenger: {
-        analysis: string;
-        score: number;
-      };
-      whiteCollarMechanic: {
-        analysis: string;
-        score: number;
-      };
-    };
-    voiceEvaluation: {
-      naturalConversational: {
-        analysis: string;
-        score: number;
-      };
-      authenticApproachable: {
-        analysis: string;
-        score: number;
-      };
-      genderNeutral: {
-        analysis: string;
-        score: number;
-      };
-      channelTailored: {
-        analysis: string;
-        score: number;
-      };
-    };
-    toneEvaluation: {
-      analysis: string;
-      score: number;
-    };
-  }
-
-  export interface ToneEvaluation {
-    analysis: string;
-    score: number;
-  }
-  
-  export interface SpectrumSection {
-    label: { 
-      top: string;
-      bottom: string;
-    };
-    content: string[];
-    color?: string;
-    isMiddle?: boolean;
-    threshold: number;
-  }
-  
-  export interface AdditionalAnalysis {
-    section: string;
-    analysis: string;
-  }
-  
-  export interface ToneAdjustmentOptions {
-    challengingPercentage: number;
-    supportivePercentage: number;
-    contentTypes: string[];
-  }
-  
-  export interface TargetAudienceEvaluation {
-    userBuyerFocus: {
-      analysis: string;
-      score: number;
-    };
-    customerTypeFocus: {
-      analysis: string;
-      score: number;
-    };
-  }
-  
-  export type EvaluationItem = {
-    description: string;
-    example: string;
-  };
-  
-
+// Common Types
 export type Rating = 'strong' | 'moderate' | 'not_present' | 'needs_work';
 
 export interface EvaluationSection {
@@ -97,64 +8,98 @@ export interface EvaluationSection {
   rationale: string;
   keyEvidence: string[];
 }
-export interface EvaluationSection_m {
-  rating: Rating;
-  rationale: string;
-  keyEvidence: string[];
+
+export interface ScoreBasedEvaluation {
+  analysis: string;
+  score: number;
 }
 
-export interface PriorityAdjustment {
-  focus: string;
-  currentState: string;
-  targetState: string;
-  implementationExample: string;
+// API Related Types
+export type ApiProvider = 'anthropic' | 'openai' | 'test';
+
+export interface ApiResponse {
+  data: any;
+  error?: string;
 }
 
-export interface BrandEvaluation {
-  diagnosis: {
-    brandFit: EvaluationSection;
-    audienceAlignment: EvaluationSection;
-    toneEffectiveness: EvaluationSection;
+export interface ApiRequest {
+  text: string;
+  prompt: (text: string) => string;
+  parser: (response: string) => any;
+  provider?: ApiProvider;
+}
+
+export interface ParsedResponse {
+  [key: string]: any;
+}
+
+// Voice & Personality Types
+export interface VoicePersonalityEvaluation {
+  personalityEvaluation: {
+    supportiveChallenger: ScoreBasedEvaluation;
+    whiteCollarMechanic: ScoreBasedEvaluation;
   };
-  guidance: {
-    priorityAdjustments: PriorityAdjustment[];
+  voiceEvaluation: {
+    naturalConversational: ScoreBasedEvaluation;
+    authenticApproachable: ScoreBasedEvaluation;
+    genderNeutral: ScoreBasedEvaluation;
+    channelTailored: ScoreBasedEvaluation;
+  };
+  toneEvaluation: ScoreBasedEvaluation;
+}
+
+// Tone Related Types
+export interface ToneEvaluation extends ScoreBasedEvaluation {}
+
+export interface SpectrumSection {
+  label: { 
+    top: string;
+    bottom: string;
+  };
+  content: string[];
+  color?: string;
+  isMiddle?: boolean;
+  threshold: number;
+}
+
+export interface ToneAdjustmentOptions {
+  challengingPercentage: number;
+  supportivePercentage: number;
+  contentTypes: string[];
+}
+
+export interface ToneAdjustmentEvaluation {
+  currentStateAnalysis: {
+    toneBalance: string;
+  };
+  specificAdjustments: {
+    phrasingChanges: Array<{
+      original: string;
+      suggested: string;
+      rationale: string;
+    }>;
   };
 }
 
-
-
-
-// Update ValueAnalysis to use the specific union type
-interface ValueAnalysis {
-  rating: 'strong' | 'moderate' | 'not_present' | 'needs_work';  // Changed from string
-  rationale: string;
-  keyEvidence: string[];
+// Target Audience Types
+export interface TargetAudienceEvaluation {
+  userBuyerFocus: ScoreBasedEvaluation;
+  customerTypeFocus: ScoreBasedEvaluation;
 }
 
-// You can also create a RatingType type alias for reuse
-export type RatingType = 'strong' | 'moderate' | 'not_present' | 'needs_work';
+// Messaging & Values Types
+export interface MessagePoint extends EvaluationSection {}
 
-interface ValueAnalysis {
-  rating: RatingType;
-  rationale: string;
-  keyEvidence: string[];
-}
-
-interface MessagePoint {
-  rating: Rating;
-  rationale: string;
-}
-
-interface MessagingPillar {
+export interface MessagingPillar {
   [key: string]: MessagePoint;
 }
 
 export interface MessagingValuesEvaluation {
   values: {
-    'Put People First': ValueAnalysis;
-    'Be Yourself': ValueAnalysis;
-    'Make It Better': ValueAnalysis;
-    'Do Your Best (Together)': ValueAnalysis;
+    'Put People First': EvaluationSection;
+    'Be Yourself': EvaluationSection;
+    'Make It Better': EvaluationSection;
+    'Do Your Best (Together)': EvaluationSection;
   };
   messaging: {
     'ACT-ON FUELS AGILE MARKETING': {
@@ -175,46 +120,29 @@ export interface MessagingValuesEvaluation {
   };
 }
 
-  // Add this interface to types.ts
-export interface ToneAdjustmentEvaluation {
-    currentStateAnalysis: {
-      toneBalance: string;
-    //   brandAlignment: string;
-    };
-    specificAdjustments: {
-      phrasingChanges: Array<{
-        original: string;
-        suggested: string;
-        rationale: string;
-      }>;
-    };
-    // bestPractices: {
-    //   do: string[];
-    //   dont: string[];
-    // };
-    // implementationPriority: {
-    //   highImpact: string[];
-    //   secondary: string[];
-    // };
-  }
+// Brand Evaluation Types
+export interface PriorityAdjustment {
+  focus: string;
+  currentState: string;
+  targetState: string;
+  implementationExample: string;
+}
 
+export interface BrandEvaluation {
+  diagnosis: {
+    brandFit: EvaluationSection;
+    audienceAlignment: EvaluationSection;
+    toneEffectiveness: EvaluationSection;
+  };
+  guidance: {
+    priorityAdjustments: PriorityAdjustment[];
+  };
+}
+
+// Complete Evaluation Type
 export interface CompleteEvaluation {
   voicePersonality: VoicePersonalityEvaluation;
   targetAudience: TargetAudienceEvaluation;
   messagingValues: MessagingValuesEvaluation;
   overall: BrandEvaluation;
-}
-
-export type ApiProvider = 'anthropic' | 'openai' | 'test';
-
-export interface ApiResponse {
-  data: any;
-  error?: string;
-}
-
-export interface ApiRequest {
-  text: string;
-  prompt: (text: string) => string;
-  parser: (response: string) => any;
-  provider?: ApiProvider;
 }
