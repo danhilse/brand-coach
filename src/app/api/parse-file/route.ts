@@ -1,20 +1,44 @@
-// app/api/parse-file/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { extractPdfText } from '@/lib/services/pdfService';
-import { configurePdfWorker } from '@/lib/config/pdfWorkerConfig';
 
-// Configure the PDF worker
-configurePdfWorker();
+export class UnsupportedFileTypeError extends Error {
+  constructor(fileType: string) {
+    super(`Unsupported file type: ${fileType}`);
+    this.name = 'UnsupportedFileTypeError';
+  }
+}
 
-export const runtime = 'nodejs';
+export class FileSizeLimitError extends Error {
+  constructor() {
+    super('File size exceeds 10MB limit');
+    this.name = 'FileSizeLimitError';
+  }
+}
 
-export const config = {
-  api: {
-    bodyParser: false,
-    responseLimit: '10mb',
-  },
-};
+export function cleanText(text: string): string {
+  return text
+    .replace(/\r\n/g, '\n')  // Normalize line endings (CRLF -> LF)
+    .replace(/\r/g, '\n')    // Convert any remaining CR to LF
+    .replace(/\t/g, '    ')  // Convert tabs to spaces
+    .replace(/[^\S\n]+/g, ' ')  // Replace multiple spaces with single space (preserve line breaks)
+    .replace(/^ +/gm, '')    // Remove leading spaces from each line
+    .replace(/ +$/gm, '')    // Remove trailing spaces from each line
+    .replace(/\n{3,}/g, '\n\n')  // Replace three or more line breaks with two
+    .trim();  // Remove leading/trailing whitespace from the entire text
+}
 
+export async function validateFile(file: File) {
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  if (file.size > maxSize) {
+    throw new FileSizeLimitError();
+  }
+
+  const extension = file.name.toLowerCase().split('.').pop();
+  const supportedTypes = ['txt'];
+  
+  if (!extension || !supportedTypes.includes(extension)) {
+    throw new UnsupportedFileTypeError(extension || 'unknown');
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,95 +52,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check file size
-    const maxSize = 10 * 1024 * 1024; // 10MB
-    if (file.size > maxSize) {
-      return NextResponse.json(
-        { error: 'File size exceeds 10MB limit' },
-        { status: 400 }
-      );
-    }
+    await validateFile(file);
+    
+    // Read the file as text with proper encoding
+    const decoder = new TextDecoder('utf-8');
+    const arrayBuffer = await file.arrayBuffer();
+    const rawText = decoder.decode(arrayBuffer);
+    
+    const cleanedText = cleanText(rawText);
 
-    let text = '';
-    const extension = file.name.toLowerCase().split('.').pop();
-
-    switch (extension) {
-      case 'txt': {
-        text = await file.text();
-        break;
-      }
-
-      case 'pdf': {
-        try {
-          const arrayBuffer = await file.arrayBuffer();
-          text = await extractPdfText(arrayBuffer);
-          
-          if (!text) {
-            throw new Error('No text content found in PDF');
-          }
-        } catch (pdfError) {
-          console.error('PDF parsing error:', pdfError);
-          return NextResponse.json(
-            { error: 'Failed to parse PDF file' },
-            { status: 400 }
-          );
-        }
-        break;
-      }
-
-      case 'doc':
-      case 'docx': {
-        try {
-          const mammoth = (await import('mammoth')).default;
-          const arrayBuffer = await file.arrayBuffer();
-          const result = await mammoth.extractRawText({ arrayBuffer });
-          text = result.value;
-          
-          if (result.messages.length > 0) {
-            console.warn('Mammoth warnings:', result.messages);
-          }
-        } catch (docError) {
-          console.error('Word document parsing error:', docError);
-          return NextResponse.json(
-            { error: 'Failed to parse Word document' },
-            { status: 400 }
-          );
-        }
-        break;
-      }
-
-      default:
-        return NextResponse.json(
-          { error: 'Unsupported file type' },
-          { status: 400 }
-        );
-    }
-
-    // Text validation and cleaning
-    if (!text || typeof text !== 'string') {
-      return NextResponse.json(
-        { error: 'Failed to extract text from file' },
-        { status: 400 }
-      );
-    }
-
-    text = text
-      .trim()
-      .replace(/\n{3,}/g, '\n\n')  // Replace multiple newlines with double newline
-      .replace(/\s{2,}/g, ' ')     // Replace multiple spaces with single space
-      .replace(/[^\S\n]+/g, ' ');  // Replace whitespace (except newlines) with single space
-
-    if (!text.length) {
+    if (!cleanedText.length) {
       return NextResponse.json(
         { error: 'Extracted text is empty' },
         { status: 400 }
       );
     }
 
-    return NextResponse.json({ text });
+    return NextResponse.json({ text: cleanedText });
 
   } catch (error) {
     console.error('File parsing error:', error);
+    
+    if (error instanceof FileSizeLimitError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    
+    if (error instanceof UnsupportedFileTypeError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
     return NextResponse.json(
       { 
         error: 'Failed to process file',

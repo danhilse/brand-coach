@@ -6,7 +6,7 @@ import type {
   VoicePersonalityEvaluation,
   TargetAudienceEvaluation,
   MessagingValuesEvaluation,
-  OverallEvaluation,
+  BrandEvaluation,
   ToneAdjustmentEvaluation
 } from '@/lib/types';
 
@@ -231,29 +231,32 @@ Return your analysis in the following JSON format. Return only the JSON object w
       "rating": "strong|moderate|not_present",
       "rationale": "Assessment of how well the content embodies leading with human connection, practicing respect, empathy and open communication",
       "keyEvidence": [
-        "Quote or example showing value alignment/misalignment",
-        "Additional examples as needed"
+        "Quote or description showing value alignment/misalignment. If a quote, be sure to wrap in quotes.",
+        // Additional examples as needed
       ]
     },
     "Be Yourself": {
       "rating": "strong|moderate|not_present",
       "rationale": "Assessment of how well the content demonstrates authenticity, honesty, and making room for diverse perspectives",
       "keyEvidence": [
-        "Quote or example showing value alignment/misalignment"
+        "Quote or description showing value alignment/misalignment. If a quote, be sure to wrap in quotes.",
+        // Additional examples as needed
       ]
     },
     "Make It Better": {
       "rating": "strong|moderate|not_present",
       "rationale": "Assessment of how well the content shows innovation, creativity, growth mindset, and tackling challenges",
       "keyEvidence": [
-        "Quote or example showing value alignment/misalignment"
+        "Quote or description showing value alignment/misalignment. If a quote, be sure to wrap in quotes.",
+        // Additional examples as needed
       ]
     },
     "Do Your Best (Together)": {
       "rating": "strong|moderate|not_present",
       "rationale": "Assessment of how well the content demonstrates excellence, collaboration, and empowerment",
       "keyEvidence": [
-        "Quote or example showing value alignment/misalignment"
+        "Quote or description showing value alignment/misalignment. If a quote, be sure to wrap in quotes.",
+        // Additional examples as needed
       ]
     }
   },
@@ -326,7 +329,7 @@ Remember to:
   return JSON.parse(response);
 }
 
-export async function evaluateOverall(content: string, platform: string): Promise<OverallEvaluation> {
+export async function evaluateOverall(content: string, platform: string): Promise<BrandEvaluation> {
     const prompt = `You are a brand alignment expert for Act-On, a marketing automation company. Your task is to evaluate how effectively content embodies Act-On's brand identity, providing analysis in a structured JSON format.
 
 First, thoroughly review these brand guidelines:
@@ -389,7 +392,7 @@ Provide your evaluation in this JSON format (return only the JSON, no other text
     return JSON.parse(response);
   }
 
-export async function _evaluateOverall(content: string, platform: string): Promise<OverallEvaluation> {
+export async function _evaluateOverall(content: string, platform: string): Promise<BrandEvaluation> {
     const prompt = `You are a brand alignment expert for Act-On, a marketing automation company. Your task is to evaluate how effectively content embodies Act-On's brand identity, providing analysis in a structured JSON format.
 
 First, thoroughly review these brand guidelines:
@@ -453,9 +456,10 @@ Each section should include enough specific examples and recommendations to prov
     return JSON.parse(response);
   }
 
-  
+let platformVariable = ""
+
 export async function adjustToneSpectrum(
-  content: string, 
+  content: string,
   targetTone: {
     challengingPercentage: number;
     supportivePercentage: number;
@@ -473,6 +477,7 @@ ${content}
 
 <tone_analysis>
 Current Challenging/Supportive Balance: ${currentScore}% challenging, ${100 - currentScore}% supportive
+Content is intended for: ${platformVariable}
 Target Balance: ${targetTone.challengingPercentage}% challenging, ${targetTone.supportivePercentage}% supportive
 Required Shift: ${targetTone.challengingPercentage - currentScore}% more challenging
 </tone_analysis>
@@ -539,6 +544,8 @@ export async function evaluateAll(content: string, platform: string, goals: stri
     await delay(1400); // 5 seconds
     return testData;
   }
+
+  platformVariable = platform
 
   console.log(`Starting all evaluations at ${new Date().toISOString()}`);
   

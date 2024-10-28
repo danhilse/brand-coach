@@ -3,13 +3,13 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import type { ApiProvider } from '@/lib/types';
+import type { ApiProvider, Rating } from '@/lib/types';
 import { evaluateAll } from '@/lib/services/evaluationService';
 import type { 
   VoicePersonalityEvaluation, 
   TargetAudienceEvaluation,
   MessagingValuesEvaluation,
-  OverallEvaluation 
+  BrandEvaluation 
 } from '@/lib/types';
 import type { 
   Platform
@@ -20,7 +20,7 @@ import { VoiceAnalysisSection } from '@/components/VoiceAnalysisSection';
 import { ToneSpectrumSection } from '@/components/ToneSpectrumSection';
 import { TargetAudienceMatrix } from '@/components/TargetAudienceMatrix';
 import { MessagingValuesSection } from '@/components/MessagingValuesSection';
-import { OverallEvaluationSection } from '@/components/OverallEvaluation';
+import { BrandEvaluationSection } from '@/components/OverallEvaluation';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { LoadingButton } from '@/components/ui/LoadingButton';
 
@@ -28,7 +28,7 @@ interface Evaluation {
   voicePersonality?: VoicePersonalityEvaluation;
   targetAudience?: TargetAudienceEvaluation;
   messagingValues?: MessagingValuesEvaluation;
-  overall?: OverallEvaluation;
+  overall?: BrandEvaluation;
 }
 
 export default function Home() {
@@ -47,11 +47,10 @@ export default function Home() {
     setIsLoading(true);
     setError('');
     setEvaluation({});
-
+  
     try {
-      const result = await evaluateAll(input, platform, goals); // Update evaluateAll to accept platform and goals
+      const result = await evaluateAll(input, platform, goals);
       setEvaluation(result);
-      console.log(result);
     } catch (err: any) {
       setError(err.message || 'An error occurred during evaluation');
     } finally {
@@ -103,7 +102,7 @@ export default function Home() {
           <LoadingState />
         ) : evaluation.overall && (
           <div className="space-y-8">
-            <OverallEvaluationSection evaluation={evaluation.overall} />
+            <BrandEvaluationSection evaluation={evaluation.overall} />
             
             {evaluation.voicePersonality && (
               <section className="space-y-6">

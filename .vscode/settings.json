@@ -11,6 +11,14 @@
         {
             "filePath": "src/lib/test/testData.json",
             "group": "Default"
+        },
+        {
+            "filePath": "src/lib/types.ts",
+            "group": "Default"
+        },
+        {
+            "filePath": "src/app/globals.css",
+            "group": "Default"
         }
     ]
 }

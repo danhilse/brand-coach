@@ -2,7 +2,7 @@
 import type { 
   VoicePersonalityEvaluation, 
   TargetAudienceEvaluation, 
-  OverallEvaluation,
+  BrandEvaluation,
   MessagingValuesEvaluation,
   ToneAdjustmentEvaluation
 } from './types';
@@ -167,7 +167,7 @@ export function parseTargetAudienceEvaluation(response: string): TargetAudienceE
   };
 }
 
-export function parseOverallEvaluation(response: string): OverallEvaluation {
+export function parseBrandEvaluation(response: string): BrandEvaluation {
   const extractList = (text: string): string[] => {
     return text
       .split('\n')

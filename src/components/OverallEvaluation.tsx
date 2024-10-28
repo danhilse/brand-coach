@@ -34,7 +34,7 @@ interface AccordionProps {
 }
 
 const Accordion = ({ title, isOpen, onToggle, children, rating }: AccordionProps) => (
-  <div className="border border-[var(--border)] rounded-lg mb-4 last:mb-0 overflow-hidden">
+  <div className="border border-[var(--border)] rounded-lg last:mb-0 overflow-hidden">
     <button
       onClick={onToggle}
       className="w-full flex items-center justify-between p-4 text-left bg-[var(--app-background)]"
@@ -115,7 +115,7 @@ const PriorityAdjustments = ({
   </div>
 );
 
-export const OverallEvaluationSection = ({ 
+export const BrandEvaluationSection = ({ 
   evaluation 
 }: { 
   evaluation: BrandEvaluation 
@@ -170,6 +170,7 @@ const EvaluationContent = ({ section }: { section: EvaluationSection }) => (
       <h3 className="text-[24px] leading-[36px] font-semibold text-[var(--text)] mb-6">
         Brand Alignment Analysis
       </h3>
+      
 
       <div className="space-y-2">
         <Accordion 
@@ -198,17 +199,18 @@ const EvaluationContent = ({ section }: { section: EvaluationSection }) => (
         >
           <EvaluationContent section={evaluation.diagnosis.toneEffectiveness} />
         </Accordion>
-
-        <Accordion 
+        <h3 className="pt-10 pb-4">Priority Adjustments</h3>
+        {/* <Accordion 
           title="Priority Adjustments" 
           isOpen={openSections.priorityAdjustments}
           onToggle={() => toggleSection('priorityAdjustments')}
         >
+          </Accordion> */}
           <PriorityAdjustments adjustments={evaluation.guidance.priorityAdjustments} />
-        </Accordion>
+        
       </div>
     </Card>
   );
 };
 
-export default OverallEvaluationSection;
+export default BrandEvaluationSection;

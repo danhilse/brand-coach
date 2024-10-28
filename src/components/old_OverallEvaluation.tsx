@@ -7,7 +7,7 @@ type EvaluationItem = {
   example: string;
 };
 
-type OverallEvaluation = {
+type BrandEvaluation = {
   overallScore: {
     analysis: string;
     score: number;
@@ -87,10 +87,10 @@ const EvaluationList = ({
   </div>
 );
 
-export const OverallEvaluationSection = ({ 
+export const BrandEvaluationSection = ({ 
   evaluation 
 }: { 
-  evaluation: OverallEvaluation 
+  evaluation: BrandEvaluation 
 }) => {
   const [openSections, setOpenSections] = useState({
     strengths: false,
@@ -158,4 +158,4 @@ export const OverallEvaluationSection = ({
   );
 };
 
-export default OverallEvaluationSection;
+export default BrandEvaluationSection;

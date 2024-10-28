@@ -13,6 +13,7 @@ interface DocumentInputProps {
   onError: (error: string) => void;
 }
 
+
 export const DocumentInput = ({ 
   value, 
   platform,
@@ -23,19 +24,13 @@ export const DocumentInput = ({
   onError 
 }: DocumentInputProps) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
     if (!file) return;
 
-    const extension = file.name.toLowerCase().split('.').pop();
-    const allowedExtensions = ['txt', 'pdf', 'doc', 'docx'];
-
-    if (!extension || !allowedExtensions.includes(extension)) {
-      onError('Only .txt, .pdf, .doc, and .docx files are allowed');
-      return;
-    }
-
+    setIsProcessing(true);
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -45,19 +40,19 @@ export const DocumentInput = ({
         body: formData,
       });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
-      }
-
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      
+      if (!res.ok) {
+        throw new Error(data.error || `HTTP error! status: ${res.status}`);
+      }
 
       onChange(data.text);
       onError('');
     } catch (err) {
       console.error('Error parsing file:', err);
       onError(err instanceof Error ? err.message : 'Failed to read file. Please try again.');
+    } finally {
+      setIsProcessing(false);
     }
   };
 

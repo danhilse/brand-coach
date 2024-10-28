@@ -1,45 +1,89 @@
 {
     "messagingValues": {
-      "messagingAlignment": [
-        {
-          "pillar": "Act-On Fuels Agile Marketing",
-          "analysis": "The text demonstrates moderate alignment with this...ntuitive nature and business results measurement.",
-          "score": 65
+      "values": {
+        "Put People First": {
+          "rating": "strong",
+          "rationale": "The text strongly embodies leading with human connection and empathy through consistent focus on customer needs and personalized support.",
+          "keyEvidence": [
+            "Emphasis on knowledgeable support team interactions",
+            "Discussion of personalized problem-solving approaches",
+            "Focus on building lasting relationships with customers"
+          ]
         },
-        {
-          "pillar": "Innovative Solutions for Innovative Marketers",
-          "analysis": "The text shows limited alignment with this pillar....ences to AI, analytics, or seamless integrations.",
-          "score": 40
+        "Be Yourself": {
+          "rating": "moderate",
+          "rationale": "The text shows authentic communication style but could better demonstrate embracing diverse perspectives.",
+          "keyEvidence": [
+            "Uses natural, conversational language",
+            "Demonstrates confidence without arrogance",
+            "Limited inclusion of diverse viewpoints"
+          ]
         },
-        {
-          "pillar": "Your Partner in Marketing Success at Every Stage",
-          "analysis": "Strong alignment with this pillar is evident throu...his pillar's emphasis on partnership and support.",
-          "score": 85
+        "Make It Better": {
+          "rating": "moderate",
+          "rationale": "The text shows innovation focus but could more strongly emphasize continuous improvement and problem-solving.",
+          "keyEvidence": [
+            "References to platform improvements",
+            "Discussion of innovative features",
+            "Limited mention of challenging assumptions"
+          ]
+        },
+        "Do Your Best (Together)": {
+          "rating": "moderate",
+          "rationale": "The content demonstrates commitment to excellence but could better emphasize collaborative aspects.",
+          "keyEvidence": [
+            "Focus on delivering quality results",
+            "Mentions of supporting customer success",
+            "Limited emphasis on dynamic collaboration"
+          ]
         }
-      ],
-      "valueAlignment": [
-        {
-          "value": "Put People First",
-          "analysis": "The text strongly embodies this value through its ...nce demonstrate strong alignment with this value.",
-          "score": 90
+      },
+      "messaging": {
+        "ACT-ON FUELS AGILE MARKETING": {
+          "Unlock your potential": {
+            "rating": "strong",
+            "rationale": "Clear emphasis on platform capabilities driving business results and accelerating marketing programs"
+          },
+          "Go from idea to impact in record time": {
+            "rating": "moderate",
+            "rationale": "Some mention of efficiency but could better emphasize speed and precision"
+          },
+          "Invest in your business' growth": {
+            "rating": "moderate",
+            "rationale": "References ROI and efficiency but could more explicitly discuss cost reduction"
+          }
         },
-        {
-          "value": "Be Yourself",
-          "analysis": "The text shows moderate alignment through its auth... personal experiences to fully embody this value.",
-          "score": 70
+        "INNOVATIVE SOLUTIONS FOR INNOVATIVE MARKETERS": {
+          "Generate demand and amplify your brand": {
+            "rating": "moderate",
+            "rationale": "Some discussion of features but limited emphasis on enterprise-level capabilities"
+          },
+          "Leverage groundbreaking AI and Analytics": {
+            "rating": "not_present",
+            "rationale": "No significant mention of AI capabilities or analytics features"
+          },
+          "Connect the dots faster to outpace your competitors": {
+            "rating": "moderate",
+            "rationale": "Some reference to integration but limited discussion of data environment"
+          }
         },
-        {
-          "value": "Do Your Best (Together)",
-          "analysis": "The content demonstrates this value through its co...ngly emphasize dynamic collaboration and urgency.",
-          "score": 75
-        },
-        {
-          "value": "Make It Better",
-          "analysis": "The text shows good alignment with this value thro... challenging assumptions or innovative solutions.",
-          "score": 65
+        "YOUR PARTNER IN MARKETING SUCCESS AT EVERY STAGE": {
+          "Get quick support every time": {
+            "rating": "strong",
+            "rationale": "Strong emphasis on responsive, knowledgeable support team availability"
+          },
+          "Leverage resources and expertise to win": {
+            "rating": "strong",
+            "rationale": "Clear focus on partner ecosystem and professional services"
+          },
+          "Pursue ambitious goals": {
+            "rating": "moderate",
+            "rationale": "Some mention of growth focus but could better emphasize revenue impact"
+          }
         }
-      ]
+      }
     },
+  
 
      "overall": {
         "diagnosis": {

@@ -358,7 +358,7 @@ Your final output should follow this structure:
 Remember to provide specific examples from the input text to support your analysis and scores. Be thorough in your evaluation, considering both explicit and implicit alignment with Act-On's messaging and values.`;
 }
 
-export function formatOverallEvaluation(text: string): string {
+export function formatBrandEvaluation(text: string): string {
   return `You are a brand alignment expert for Act-On, a marketing automation company. Your task is to provide a comprehensive evaluation of a given text against Act-On's brand guidelines. 
 
 First, carefully review the following brand guidelines:
