@@ -49,7 +49,8 @@ export interface VoicePersonalityEvaluation {
 }
 
 // Tone Related Types
-export interface ToneEvaluation extends ScoreBasedEvaluation {}
+export type ToneEvaluation = ScoreBasedEvaluation;
+
 
 export interface SpectrumSection {
   label: { 
@@ -90,9 +91,8 @@ export interface TargetAudienceEvaluation {
 // Messaging & Values Types
 export interface MessagePoint extends EvaluationSection {}
 
-export interface MessagingPillar {
-  [key: string]: MessagePoint;
-}
+export type MessagingPillar = Record<string, MessagePoint>;
+
 
 export interface MessagingValuesEvaluation {
   values: {
