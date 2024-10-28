@@ -89,7 +89,7 @@ export interface TargetAudienceEvaluation {
 }
 
 // Messaging & Values Types
-export interface MessagePoint extends EvaluationSection {}
+export type MessagePoint = EvaluationSection;
 
 export type MessagingPillar = Record<string, MessagePoint>;
 
