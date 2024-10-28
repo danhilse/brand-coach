@@ -16,14 +16,14 @@ export class FileSizeLimitError extends Error {
 
 export function cleanText(text: string): string {
   return text
-    .replace(/\r\n/g, '\n')  // Normalize line endings (CRLF -> LF)
-    .replace(/\r/g, '\n')    // Convert any remaining CR to LF
-    .replace(/\t/g, '    ')  // Convert tabs to spaces
-    .replace(/[^\S\n]+/g, ' ')  // Replace multiple spaces with single space (preserve line breaks)
-    .replace(/^ +/gm, '')    // Remove leading spaces from each line
-    .replace(/ +$/gm, '')    // Remove trailing spaces from each line
-    .replace(/\n{3,}/g, '\n\n')  // Replace three or more line breaks with two
-    .trim();  // Remove leading/trailing whitespace from the entire text
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .replace(/\t/g, '    ')
+    .replace(/[^\S\n]+/g, ' ')
+    .replace(/^ +/gm, '')
+    .replace(/ +$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 export async function validateFile(file: File) {
