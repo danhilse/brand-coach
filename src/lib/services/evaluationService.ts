@@ -1,5 +1,7 @@
 // evaluations.ts
 
+
+
 let currentScore = 0;
 
 import type { 
@@ -7,7 +9,8 @@ import type {
   TargetAudienceEvaluation,
   MessagingValuesEvaluation,
   BrandEvaluation,
-  ToneAdjustmentEvaluation
+  ToneAdjustmentEvaluation,
+  CompleteEvaluation
 } from '@/lib/types';
 
 import { brandGuidelines, icp, messaging, personality } from '@/lib/brandGuidelines';
@@ -538,15 +541,15 @@ import testData from '@/lib/test/testData.json';
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   
-export async function evaluateAll(content: string, platform: string, goals: string) {
+// In evaluateAll function, just add 'as CompleteEvaluation' to the return:
 
+export async function evaluateAll(content: string, platform: string, goals: string) {
   if (content.trim().toLowerCase() === 'test') {
-    await delay(1400); // 5 seconds
-    return testData;
+    await delay(1400);
+    return testData as CompleteEvaluation;
   }
 
-  platformVariable = platform
-
+  platformVariable = platform;
   console.log(`Starting all evaluations at ${new Date().toISOString()}`);
   
   try {
@@ -569,7 +572,7 @@ export async function evaluateAll(content: string, platform: string, goals: stri
       targetAudience,
       messagingValues,
       overall
-    };
+    } as CompleteEvaluation;  // Add this type assertion
   } catch (error) {
     console.error('Evaluation failed:', error);
     throw error;

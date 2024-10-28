@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import type { MessagingValuesEvaluation } from '@/lib/types';
+import type { MessagingValuesEvaluation, Rating } from '@/lib/types';
 import { Card } from './Card';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+
 
 interface RatingBadgeProps {
   rating: 'strong' | 'moderate' | 'not_present' | 'needs_work';
@@ -49,7 +50,7 @@ const RatingBadge = ({ rating }: RatingBadgeProps) => {
 interface ValueAnalysisSectionProps {
   title: string;
   analysis: {
-    rating: 'strong' | 'moderate' | 'not_present';
+    rating: Rating;  // Now using the Rating type that includes all values
     rationale: string;
     keyEvidence?: string[];
   };
