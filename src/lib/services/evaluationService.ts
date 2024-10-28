@@ -1,7 +1,5 @@
 // evaluations.ts
 
-
-
 let currentScore = 0;
 
 import type { 

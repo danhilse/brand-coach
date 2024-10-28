@@ -161,14 +161,13 @@ Our voice underpins everything we say in the market. But our tone will vary from
 
 10% CHALLENGING / 90% SUPPORTIVE
 
-- VIDEO
-- SOCIAL
-- ADVERTISING
+- CS TEAM
+- CONNECT.ACT-ON.COM
 
 30% CHALLENGING / 70% SUPPORTIVE
 
-- BLOGS
-- EMAIL MKTG
+- CUSTOMER MARKETING
+- PRODUCT
 
 50% CHALLENGING / 50% SUPPORTIVE
 
@@ -179,14 +178,14 @@ Our voice underpins everything we say in the market. But our tone will vary from
 
 70% CHALLENGING / 30% SUPPORTIVE
 
-- CUSTOMER MARKETING
-- PRODUCT
+- BLOGS
+- EMAIL MKTG
 
 90% CHALLENGING / 10% SUPPORTIVE
 
-- CS TEAM
-- CONNECT.ACT-ON.COM
-`
+- VIDEO
+- SOCIAL
+- ADVERTISING`
 
 export const brandGuidelines = `
 
@@ -280,14 +279,13 @@ Our voice underpins everything we say in the market. But our tone will vary from
 
 10% CHALLENGING / 90% SUPPORTIVE
 
-- VIDEO
-- SOCIAL
-- ADVERTISING
+- CS TEAM
+- CONNECT.ACT-ON.COM
 
 30% CHALLENGING / 70% SUPPORTIVE
 
-- BLOGS
-- EMAIL MKTG
+- CUSTOMER MARKETING
+- PRODUCT
 
 50% CHALLENGING / 50% SUPPORTIVE
 
@@ -298,13 +296,14 @@ Our voice underpins everything we say in the market. But our tone will vary from
 
 70% CHALLENGING / 30% SUPPORTIVE
 
-- CUSTOMER MARKETING
-- PRODUCT
+- BLOGS
+- EMAIL MKTG
 
 90% CHALLENGING / 10% SUPPORTIVE
 
-- CS TEAM
-- CONNECT.ACT-ON.COM
+- VIDEO
+- SOCIAL
+- ADVERTISING
 
 ## **Ideal Customer Profile (ICP)**
 

@@ -53,13 +53,13 @@ interface ToneEvaluation {
 const spectrumData: SpectrumSection[] = [
   {
     label: { top: "10% CHALLENGING", bottom: "90% SUPPORTIVE" },
-    content: ["-VIDEO", "-SOCIAL", "-ADVERTISING"],
+    content: ["-CS TEAM", "-CONNECT.ACT-ON.COM"],
     color: "bg-[#0bbbb4]",
     threshold: 20
   },
   {
     label: { top: "30% CHALLENGING", bottom: "70% SUPPORTIVE" },
-    content: ["-BLOGS", "-EMAIL MKTG"],
+    content: ["-CUSTOMER MARKETING", "-PRODUCT"],
     color: "bg-[#52c9c4]",
     threshold: 40
   },
@@ -71,13 +71,15 @@ const spectrumData: SpectrumSection[] = [
   },
   {
     label: { top: "70% CHALLENGING", bottom: "30% SUPPORTIVE" },
-    content: ["-CUSTOMER MARKETING", "-PRODUCT"],
+    
+    content: ["-BLOGS", "-EMAIL MKTG"],
     color: "bg-[#f07a85]",
     threshold: 80
   },
   {
     label: { top: "90% CHALLENGING", bottom: "10% SUPPORTIVE" },
-    content: ["-CS TEAM", "-CONNECT.ACT-ON.COM"],
+    
+    content: ["-VIDEO", "-SOCIAL", "-ADVERTISING"],
     color: "bg-[#ef4b5d]",
     threshold: 100
   }
