@@ -93,6 +93,7 @@ Consider the following in your evaluation:
 - Supportive elements: Content offering guidance or reassurance
 - Ratio: Percentage of challenging content (0 = fully supportive, 50 = neutral, 100 = fully challenging)
 
+
 Analyze each aspect thoroughly and provide your evaluation in the following JSON format. Return only the JSON object with no additional text or formatting:
 
 {
