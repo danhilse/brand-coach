@@ -18,7 +18,7 @@ const API_PROVIDER = 'anthropic'; // Can be 'anthropic', 'openai', or 'test'
 
 async function makeAPICall(content: string) {
   const maxRetries = 2;
-  const timeout = 55000; // Set to 55s to be under the 60s function limit
+  const timeout = 175000;
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {

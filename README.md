@@ -1,151 +1,219 @@
 # Brand Voice Analysis Tool
 
-A Next.js application that analyzes content against Act-On's brand guidelines using AI to evaluate voice, tone, messaging alignment, and audience targeting.
+A Next.js-based content analysis system that leverages the Claude API to evaluate content against Act-On's brand guidelines. The system performs multi-dimensional analysis of marketing content, providing detailed evaluation across voice, tone, audience targeting, and messaging alignment.
 
-## Overview
-
-This tool helps ensure content consistency with Act-On's brand identity by analyzing:
-- Voice and personality alignment
-- Target audience focus
-- Messaging values and framework alignment
-- Overall brand fit
-- Tone spectrum analysis
-- Content adjustments and recommendations
-
-## Tech Stack
-
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS with custom design system variables
-- **AI Integration**: Anthropic Claude API for content analysis
-- **Components**: Custom UI components with shadcn/ui integration
-- **File Processing**: PDF parsing capabilities
-
-## Project Structure
-
-```
-├── app/                  # Next.js app directory
-│   ├── api/             # API route handlers
-│   ├── fonts/           # Custom font files
-│   └── globals.css      # Global styles
-├── components/          # React components
-│   ├── ui/             # Reusable UI components
-│   └── ...             # Feature-specific components
-├── lib/                # Core functionality
-│   ├── services/       # Business logic and API services
-│   ├── config/         # Configuration files
-│   └── types/          # TypeScript type definitions
-```
-
-## Key Features
-
-### Content Analysis
-- Voice and personality evaluation
-- Target audience alignment assessment
-- Messaging values analysis
-- Brand guideline compliance checking
-- Tone spectrum analysis with adjustment recommendations
-
-### User Interface
-- Document input with platform selection
-- Interactive analysis visualization
-- Detailed evaluation breakdowns
-- Priority adjustment recommendations
-- Loading states and error handling
-
-### Technical Features
-- File parsing support
-- API retry mechanism with exponential backoff
-- Timeout handling for API calls
-- Comprehensive type system
-- Component-based architecture
-
-## Setup and Installation
-
-1. Clone the repository
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Set up environment variables:
-```env
-ANTHROPIC_API_KEY=your_api_key_here
-```
-
-4. Run the development server:
-```bash
-npm run dev
-```
-
-## Usage
-
-1. **Input Content**: Paste your content or upload a file in the main input area.
-2. **Select Platform**: Choose the intended platform for your content.
-3. **Add Goals** (optional): Specify content goals for more targeted analysis.
-4. **Click Evaluate**: The system will analyze your content across multiple dimensions.
-5. **Review Results**: Examine the detailed breakdown of:
-   - Brand personality alignment
-   - Voice characteristics
-   - Tone spectrum position
-   - Target audience focus
-   - Messaging framework alignment
-   - Overall brand fit
-   - Specific recommendations for improvement
-
-## API Integration
-
-The application uses the Anthropic Claude API for content analysis. Key integration points:
-
-- `evaluationService.ts`: Handles all API calls with retry logic
-- `api/evaluate`: API route for content evaluation
-- Timeout set to 55s to stay within function limits
-- Exponential backoff for failed requests
-
-## Component Architecture
+## System Architecture
 
 ### Core Components
-- `DocumentInput`: Handles content input and platform selection
-- `BrandPersonalitySection`: Displays personality alignment analysis
-- `VoiceAnalysisSection`: Shows voice characteristic evaluation
-- `ToneSpectrumSection`: Visualizes content tone positioning
-- `TargetAudienceMatrix`: Displays audience focus analysis
-- `MessagingValuesSection`: Shows messaging framework alignment
-- `BrandEvaluationSection`: Presents overall evaluation and recommendations
 
-### UI Components
-- `Card`: Container component with consistent styling
-- `LoadingButton`: Button with loading state
-- `LoadingState`: Loading indicator with animated messages
-- `CustomSelect`: Styled select dropdown
-- `ScoreBar`: Visual representation of scores
-- `Tooltip`: Contextual help tooltips
 
-## Error Handling
+### Tech Stack Details
 
-The application includes comprehensive error handling:
-- API timeout management
-- Request retry logic
-- User-friendly error messages
-- Fallback states for failed evaluations
+- **Framework**: Next.js 14 with App Router
+  - Server Components
+  - API Routes
+  - Static/Dynamic Rendering
+- **Language**: TypeScript (strict mode)
+- **Styling**: Tailwind CSS + CSS Variables
+- **AI Integration**: Anthropic Claude 3.5 Sonnet
+- **Component Library**: Custom + shadcn/ui
+- **File Processing**: PDF.js + Custom Parsers
 
-## Development Guidelines
+## Implementation Details
 
-1. **Type Safety**
-   - Use TypeScript types for all components and functions
-   - Maintain type definitions in `lib/types.ts`
+### AI Integration
 
-2. **Component Structure**
-   - Keep components focused and single-responsibility
-   - Use composition for complex UI elements
-   - Maintain consistent prop interfaces
+```typescript
+// API Configuration
+const config = {
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 2048,
+  temperature: 0.3,
+  timeout: 55000, // 55s timeout
+  retries: 2
+};
 
-3. **Styling**
-   - Use Tailwind CSS utilities
-   - Follow design system variables
-   - Maintain responsive design principles
+// Rate Limiting
+- 3 requests/second per provider
+- Queue-based implementation
+- Exponential backoff for retries
+```
 
-4. **Testing**
-   - Include test data in `lib/test/`
-   - Use mock evaluations for development
-   - Test error handling scenarios
+### Content Analysis Pipeline
+
+1. **Input Processing**
+   - Text sanitization
+   - File parsing (PDF, DOC, TXT)
+   - Platform context association
+
+2. **Parallel Analysis**
+   ```typescript
+   const results = await Promise.all([
+     evaluateVoicePersonality(content, platform),
+     evaluateTargetAudience(content),
+     evaluateMessagingValues(content),
+     evaluateOverall(content, platform)
+   ]);
+   ```
+
+3. **Evaluation Types**
+   - Voice & Personality (0-100 scoring)
+   - Target Audience Matrix
+   - Messaging Framework Alignment
+   - Tone Spectrum Analysis
+   - Overall Brand Fit
+
+### Component Architecture
+
+```typescript
+// Core Analysis Components
+BrandPersonalitySection
+VoiceAnalysisSection
+ToneSpectrumSection
+TargetAudienceMatrix
+MessagingValuesSection
+BrandEvaluationSection
+
+// Base UI Components
+Card                    // Container wrapper
+ScoreBar               // Progress visualization
+CustomSelect           // Platform selector
+LoadingState           // Analysis status
+```
+
+### Error Handling Strategy
+
+1. **API Layer**
+   - Timeout management (55s limit)
+   - Retry logic with exponential backoff
+   - Provider failover (Claude → GPT-4)
+   - Rate limiting protection
+
+2. **Frontend Layer**
+   - Loading states
+   - Error boundaries
+   - Fallback content
+   - User feedback
+
+3. **File Processing**
+   - Format validation
+   - Size limits
+   - Parsing error recovery
+
+## Type System
+
+Key type definitions for analysis results:
+
+```typescript
+type Rating = 'strong' | 'moderate' | 'not_present' | 'needs_work';
+
+interface EvaluationSection {
+  rating: Rating;
+  rationale: string;
+  keyEvidence: string[];
+}
+
+interface ScoreBasedEvaluation {
+  analysis: string;
+  score: number;
+}
+
+// Complete evaluation structure
+interface CompleteEvaluation {
+  voicePersonality: VoicePersonalityEvaluation;
+  targetAudience: TargetAudienceEvaluation;
+  messagingValues: MessagingValuesEvaluation;
+  overall: BrandEvaluation;
+}
+```
+
+## Development Workflow
+
+### Environment Setup
+
+```bash
+# Installation
+npm install
+
+# Environment Variables
+ANTHROPIC_API_KEY=your_key_here
+OPENAI_API_KEY=your_backup_key_here  # Optional for failover
+
+# Development
+npm run dev         # Start dev server
+npm run type-check  # Run type checking
+npm run build      # Production build
+```
+
+### Testing Strategy
+
+1. **Unit Tests**
+   - Component rendering
+   - Utility functions
+   - Type validations
+
+2. **Integration Tests**
+   - API endpoints
+   - Analysis pipeline
+   - File processing
+
+3. **Mock Data**
+   - Test evaluations
+   - Sample content
+   - Error scenarios
+
+### Performance Considerations
+
+1. **API Optimization**
+   - Response caching
+   - Request batching
+   - Parallel processing
+
+2. **Frontend Performance**
+   - Component memoization
+   - Lazy loading
+   - Progressive enhancement
+
+3. **Error Recovery**
+   - Graceful degradation
+   - Fallback providers
+   - Retry mechanisms
+
+## Deployment
+
+The application is deployed on Vercel with the following configuration:
+
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "ANTHROPIC_API_KEY": "@anthropic-api-key"
+  }
+}
+```
+
+## Future Improvements
+
+1. **Technical Enhancements**
+   - WebSocket integration for real-time analysis
+   - Browser-based PDF processing
+   - Enhanced error recovery
+   - Performance monitoring
+
+2. **Feature Additions**
+   - Batch processing
+   - Analysis history
+   - Collaborative editing
+   - Export capabilities
+
+3. **Architecture Evolution**
+   - Microservices split
+   - Queue-based processing
+   - Enhanced caching
+   - A/B testing framework

@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { generateResponse } from '@/lib/api-clients';
 
-export const maxDuration = 60; // Set to 60 seconds
+export const maxDuration = 180; // Increased to 180 seconds
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {

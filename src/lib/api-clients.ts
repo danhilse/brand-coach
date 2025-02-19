@@ -62,7 +62,11 @@ async function callAnthropic(prompt: string) {
     
     try {
       const { Anthropic } = await import('@anthropic-ai/sdk');
-      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+      const client = new Anthropic({ 
+        apiKey: process.env.ANTHROPIC_API_KEY!,
+        maxRetries: 2,
+        timeout: 175000 // 175 seconds
+      });
       
       const response = await client.messages.create({
         model: 'claude-3-5-sonnet-20241022',
@@ -92,7 +96,10 @@ async function callOpenAI(prompt: string) {
     
     try {
       const { default: OpenAI } = await import('openai');
-      const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+      const client = new OpenAI({ 
+        apiKey: process.env.OPENAI_API_KEY!,
+        timeout: 175000 // 175 seconds
+      });
       
       const response = await client.chat.completions.create({
         model: 'gpt-4-turbo-preview',
